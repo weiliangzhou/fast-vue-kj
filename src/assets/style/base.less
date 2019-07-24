@@ -1,0 +1,113 @@
+
+*{
+    padding: 0;
+    margin: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+form,
+fieldset {
+	margin: 0;
+	padding: 0;
+    font-weight: normal;
+    line-height: 1.5;
+    color: #333333;
+}
+
+
+/* flex-direction */
+.flex-row{
+	display: flex;
+	display: -webkit-flex;
+    flex-direction: row;
+}
+.flex-rowr{
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row-reverse;
+}
+.flex-col{
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: column;
+}
+.flex-colr{
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: column-reverse;
+}
+
+/* justify-content */
+.flex-ar{
+	justify-content: space-around;
+	-webkit-justify-content: space-around;
+}
+.flex-be{
+	justify-content: space-between;
+	-webkit-justify-content: space-between;
+}
+.flex-st{
+	justify-content: flex-start;
+	-webkit-justify-content:  flex-start;
+}
+
+/* layout */
+.width-full{
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* image */
+.img-full{
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.img-full-rd{
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+    border-radius: 50%;
+}
+
+/* 文字超出隐藏显示'...' */
+.elipsTx{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    word-break:break-all;  /* 处理特殊字符和字母溢出 */
+    min-width: 0;
+}
+
+/* 清除浮动 */
+.clearFix{
+    content: "";
+    display: block;
+    overflow: hidden;
+    clear: both;
+}
+
+/* box-sizing */
+.boxIng{
+    box-sizing: border-box;
+}
+
+
+@keyframes backOpacity{
+    0%   { opacity: 1 }
+    25%  { opacity: .5 }
+    50%  { opacity: 1 }
+    75%  { opacity: .5 }
+    100% { opacity: 1 }
+ }
+ 
+ .animation_opactiy{
+     animation: backOpacity 2s ease-in-out infinite;
+ }

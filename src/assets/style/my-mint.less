@@ -1,0 +1,49 @@
+.search-box{
+    .mint-popup.picker-toolbar{
+        height: 80px !important;
+    }
+    .mint-popup.picker-toolbar .mint-datetime-action{
+        font-size: 32px !important;
+        line-height: 80px !important;
+    }
+
+    .mint-popup.picker-slot-wrapper .picker-item{
+        height: 72px;
+        line-height: 72px;
+        padding: 0 20px;
+        font-size: 32px;
+    }
+    .mint-popup.mint-datetime-picker .picker-items .picker-slot:last-child{
+        display: none !important;
+    }
+
+    .mint-popup.picker-slot-wrapper .picker-item{
+        text-align: center;
+    }
+
+    .mint-popup.picker mint-datetime-picker{
+        position: relative;
+        z-index: 9999;
+    }
+
+    .mint-popup.mint-actionsheet-button, .mint-actionsheet-listitem {
+        height: 90px !important;
+        line-height: 90px;
+        font-size: 36px;
+        color: #656565;
+    }
+}
+
+
+
+@keyframes backOpacity{
+    0%   { opacity: 1 }
+    25%  { opacity: .5 }
+    50%  { opacity: 1 }
+    75%  { opacity: .5 }
+    100% { opacity: 1 }
+ }
+ 
+ .animation_opactiy{
+     animation: backOpacity 2s ease-in-out infinite;
+ }
