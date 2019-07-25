@@ -23,7 +23,7 @@ Vue.use(ConfirmPlugin)
 Vue.use(DatetimePlugin)
 Vue.use(InfiniteScroll)
 // Vue.use(MintUI)
-Vue.mixin(shouldLoginMixin) // 混入微信config注册与微信分享初始化
+// Vue.mixin(shouldLoginMixin) // 混入微信config注册与微信分享初始化
 Vue.use(Vuex)
 Vue.config.productionTip = false
 // fastclick.attach(document.body) // 防止用户在手机端的点击穿透

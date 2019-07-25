@@ -6,22 +6,6 @@ import yf from './yf-router'
 import { checkIsActive, refreshToken } from '@/api'
 import { getUserInfo, setUserInfo } from '@/global';
 Vue.use(Router)
-/* 路由对象item项说明
-   {
-        path: "/login", // 路径声明
-        name: "login",  // 路由别名
-        meta: {
-            keepAlive: true, // 当前路由是否缓存(暂时不做缓存处理)
-            title: "", // 当前页面写死的标题(页面自定义标题，若需要根据后端请求回来的数据来改标题就要在那个相应的回调里设置  document.title = title), 若没有设置 那就是用默认的
-            shareInfo: { // 自定义分享信息，若需要根据异步数据来设置，则需要在 页面所对应的组件上挂载一个 Promise => {title,desc}  这样的
-                title: "欢迎来到微商夜大",
-                desc: "从今往后，微商夜大与您同行"
-            }
-        },
-        component: () => // 对应组件
-            import("@/pageView/login/login")
-    }
-*/
 const router = new Router({
     mode: "history",
     scrollBehavior(to, from, savedPosition) {
@@ -71,7 +55,7 @@ const router = new Router({
     ]
 })
 router.beforeEach((to, from, next) => {
-    if (["login", "perfect-userInfo", "logout"].includes(to.name)) {
+    if (["login", "perfect-userInfo", "logout"].includes(to.name)||(true)) {
         next()
     } else {
        Promise.resolve().then(() => {

@@ -82,36 +82,21 @@ module.exports = {
 
   // 配置 webpack-dev-server 行为。
   devServer: {
-    /*
-    disableHostCheck: true,
-    open: process.platform === "darwin",
-    assetsSubDirectory: "static",
-    assetsPublicPath: "/",
-    // proxyTable: {
-    //   "/dev": {
-    //     target: "http://tsales.xc2018.com.cn", //测试环境
-    //     // target: 'http://47.98.43.247', //线上
-    //     // target: 'http://192.168.1.136:8090', //候
-    //     // target: 'http://192.168.0.158:8886', //伟亮
-    //     // target: 'http://192.168.1.134:8886', //康
-    //     ws: true,
-    //     changeOrigin: true,
-    //     secure: false,
-    //     pathRewrite: {
-    //       "^/dev": "" // 需要rewrite重写的,
-    //     }
-    //   }
-    //   // proxy: {target:'http://47.98.55.127:8081'}
-    // },
-    // Various Dev Server settings
-    host: "localhost", // can be overwritten by process.env.HOST
-    port: 80, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-    autoOpenBrowser: false,
-    errorOverlay: true,
-    notifyOnErrors: true
-    */
+    proxy: {
+      "/dev": {
+        target: 'http://47.111.119.24', //线上
+        ws: true,
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          "^/dev": "" // 需要rewrite重写的,
+        }
+      }
+      // proxy: {target:'http://47.98.55.127:8081'}
+    },
+
     open: true,
-    host: "tmall.xc2018.com.cn",
+    host: "kj.yizhidao9.com",
     port: 80,
     https: false,
     hotOnly: false

@@ -484,7 +484,8 @@ section[id="course-container"] {
   & > div {
     flex: 1;
     height: 352px;
-    width: calc(100% - 48px);
+    border-width: 32px 24px 0 24px;
+    border-style: transparent;
     margin-top: 32px;
     background: rgba(255, 255, 255, 1);
     box-shadow: 2px 4px 12px 0px rgba(229, 229, 229, 0.5); /* no */
@@ -492,7 +493,6 @@ section[id="course-container"] {
     overflow: hidden;
     position: absolute;
     top: 0;
-    right: 24px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
