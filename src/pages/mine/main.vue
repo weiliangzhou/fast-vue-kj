@@ -1,143 +1,16 @@
 <!--  -->
 <template>
   <section id="person-container">
-    <transition
-      enter-active-class="animated slideInDown"
-      leave-active-class="animated slideOutUp"
-    >
-      <section
-        v-if="userInfo"
-        class="top-container"
-      >
-        <div>
-          <section>
-            <img
-              :src="userInfo.avatar"
-              alt=""
-            >
-            <ul>
-              <h5>{{userInfo.nickname}}</h5>
-              <li>
-                <button><span>{{userInfo.levelName}}</span></button>
-                <p>学号{{userInfo.username}}</p>
-              </li>
-            </ul>
-          </section>
-          <li><i class="iconfont font22 icon-riqicopyx1"></i>
-            <p>开启知识新零售创业的第<span>{{activeDay}}</span>天</p>
-          </li>
-        </div>
-      </section>
-    </transition>
-    <transition
-      enter-active-class="animated slideInLeft"
-      leave-active-class="animated slideOutUp"
-    >
-      <ul
-        v-if="testSlide"
-        class="button-menus"
-      >
-        <li
-          class="agent"
-          @click="triggerSupplier"
-        >
-          <i></i>
-          <span>供应商</span>
-        </li>
-        <router-link
-          class="vip"
-          to="/authorization"
-        >
-          <i></i>
-          <span>授权书</span>
-        </router-link>
-        <referrer ref="referrer" />
-      </ul>
-    </transition>
 
-    <transition
-      enter-active-class="animated slideInUp"
-      leave-active-class="animated slideOutUp"
-    >
-      <ul
-        class="menu-container"
-        v-if="menusIsShow"
-      >
-      <!-- <router-link
-          tag="li"
-          to="/my-interest"
-        >
-          <p><i class="iconfont icon-chakanshujucopyx1"></i></p>
-          <div>
-            <span>权益包</span><i class="iconfont icon-ChevronCopyx"></i>
-          </div>
-        </router-link> -->
-        <button @click="pushRoute('my-interest')" class="suggest1">
-            <p></p>
-            <div><span>我的权益</span><i class="iconfont icon-ChevronCopyx"></i></div>
-        </button>
-
-        <li @click="goMaterialLibrary">
-          <p><i class="iconfont icon-tupian-copyx1"></i></p>
-          <div>
-            <span>素材库</span><i class="iconfont icon-ChevronCopyx"></i>
-          </div>
-        </li>
-
-        <router-link
-          tag="li"
-          to="/competition-rank"
-        >
-          <p><i class="iconfont icon-chakanshujucopyx1"></i></p>
-          <div>
-            <span>猛虎团</span><i class="iconfont icon-ChevronCopyx"></i>
-          </div>
-        </router-link>
-        <router-link
-          tag="li"
-          to="/messages"
-        >
-          <p><i :class="['iconfont', 'icon-xiaoxicopyx1', badge?'messagePoint':'']"></i></p>
-          <div>
-            <span>我的消息</span><i class="iconfont  icon-ChevronCopyx"></i>
-          </div>
-        </router-link>
-        <router-link
-          tag="li"
-          to="/mine-info"
-        >
-          <p><i class="iconfont font22 icon-shezhi-copyx1"></i></p>
-          <div>
-            <span>个人设置</span><i class="iconfont  icon-ChevronCopyx"></i>
-          </div>
-        </router-link>
-        <router-link
-          tag="li"
-          to="/admin-menu"
-          v-if="isAdmin || currentLevel>=600"
-        >
-          <p><i class="iconfont font22 icon-baocuncopyx1"></i></p>
-          <div>
-            <span>后台管理</span><i class="iconfont icon-ChevronCopyx"></i>
-          </div>
-        </router-link>
-        <button @click="goSuggest" class="suggest">
-            <p></p>
-            <div><span>用户反馈</span><i class="iconfont icon-ChevronCopyx"></i></div>
-        </button>
-      </ul>
-    </transition>
   </section>
 </template>
 
 <script>
 import { checkIsActive, countMessageIsNotRead } from "@/api";
 import { Toast, getUserInfo } from "@/global"; // resolveTimeout, rejectTimeout
-import referrer from "./referrer";
+
 export default {
-  components: {
-    referrer
-  },
+
   data() {
     return {
       userInfo: null,

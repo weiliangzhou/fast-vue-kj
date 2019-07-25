@@ -3,8 +3,8 @@ import Router from 'vue-router'
 import freedrbRouter from './freedrb-router'
 import ly from './ly-router'
 import yf from './yf-router'
-import { checkIsActive, refreshToken } from '@/api'
-import { getUserInfo, setUserInfo } from '@/global';
+import { checkIsActive, refreshToken, login } from '@/api'
+import { getUserInfo, setUserInfo, AuthorizationToLogin, checkIsLogined } from '@/global';
 Vue.use(Router)
 const router = new Router({
     mode: "history",
@@ -55,37 +55,22 @@ const router = new Router({
     ]
 })
 router.beforeEach((to, from, next) => {
-    if (["login", "perfect-userInfo", "logout"].includes(to.name)||(true)) {
+    let { code, referUid } = to.query
+    // code = '011FByWq1FX24m0YgqYq1rEPWq1FByWJ'
+    const isLogined = checkIsLogined()
+    if(isLogined) {
         next()
-    } else {
-       Promise.resolve().then(() => {
-           if (from.name == "login") {
-               return "ok"
-           } else {
-               return refreshToken()
-           }
-       })
-       .then(res => {
-           if (getUserInfo().isActive) {
-            checkIsActive()
-            throw new Error("本地的缓存已经激活过了")
-           } else {
-            return checkIsActive().then(res => {
-                let { isActive } = res;
-                setUserInfo({isActive})
-                return res
-            })
-           }
-        })
-       .then(res => {
-            if (!res.isActive) {
-                next({name: "perfect-userInfo", replace: true})
-            } else {
-                throw new Error("请完善信息")
-            }
-        }).catch(err => {
+    } else if (!isLogined&&code) {
+        login({code: code, referUid }).then(({token, userBase = {}})=> {
+           setUserInfo({token, ...userBase})
             next()
+        }).catch(err => {
+            console.log(err)
+           // AuthorizationToLogin()
         })
+    } else {
+        alert("login")
+        AuthorizationToLogin()
     }
 })
 router.afterEach((to) => {
@@ -99,7 +84,7 @@ router.afterEach((to) => {
     }
 })
 let isRefresh = sessionStorage.getItem("isRefresh");
-window.isRefresh = isRefresh
+window.isRefresh = true
 router.onReady(() => {
     if (process.env.NODE_ENV == "production" && !isRefresh) {
         (function() {
