@@ -1,18 +1,60 @@
+import listPage from "@/pages/mine/list-page"
 export default [
-  {
     /**
      *    courseId 套课id
-     *
-     */
-    path: "/test",
-    name: "test",
-    meta: {
-      keepAlive: true,
-      title: "首页",
-      shareInfo: {}
-    },
-    component: () => import("@/pages/mine/list-page")
+     * ['extract','energy','acalculationPower']
+     */ 
+    {
+      path: "/extract",
+      name: "extract",
+      meta: {
+          title: "总资产(btc)",
+      },
+      component: {
+         render(h) {
+          return h(listPage, {props: {
+              type: "extract"
+          }})
+         },
+         component: {
+          listPage
+         }
+      }
   },
+  {
+    path: "/energy",
+    name: "energy",
+    meta: {
+        title: "电力记录",
+    },
+    component: {
+       render(h) {
+        return h(listPage, {props: {
+            type: "energy"
+        }})
+       },
+       component: {
+        listPage
+       }
+    }
+},
+{
+  path: "/acalculationPower",
+  name: "acalculationPower",
+  meta: {
+      title: "算力记录",
+  },
+  component: {
+     render(h) {
+      return h(listPage, {props: {
+          type: "acalculationPower"
+      }})
+     },
+     component: {
+      listPage
+     }
+  }
+},
   {
     path: "/home",
     meta: {

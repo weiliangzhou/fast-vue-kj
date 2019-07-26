@@ -45,13 +45,5 @@
     "sass-loader": "^7.1.0",
     "vue-loader": "^14.2.2",
     "vue-template-compiler": "^2.6.10"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8",
-    "Safari 6",
-    "IOS >= 7",
-    "ios >= 7"
-  ]
+  }
 }

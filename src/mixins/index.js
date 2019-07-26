@@ -2,23 +2,23 @@ import wx from 'weixin-js-sdk'
 import { checkIsLogined } from "../global/utils/localUser"
 
 export const shouldLoginMixin = {
-  beforeRouteEnter(to, from, next) {
-    if (!checkIsLogined() && ["login"].indexOf(to.name) === -1) {
-      // AuthorizationToLogin()
-      next({name: "login"})
-    } else {
-      next((vm) => {
-        wx.hideOptionMenu()
-        vm.routerFrom = from.name
-        vm.currentRouteName = to.name
-      })
-    }
-  },
-  beforeRouteLeave (to, from, next) {
-  // document.documentElement.scrollTop
-  from.meta.savedPosition = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop || 0;
-  next()
-},
+//   beforeRouteEnter(to, from, next) {
+//     if (!checkIsLogined() && ["login"].indexOf(to.name) === -1) {
+//       // AuthorizationToLogin()
+//       next({name: "login"})
+//     } else {
+//       next((vm) => {
+//         wx.hideOptionMenu()
+//         vm.routerFrom = from.name
+//         vm.currentRouteName = to.name
+//       })
+//     }
+//   },
+//   beforeRouteLeave (to, from, next) {
+//   // document.documentElement.scrollTop
+//   from.meta.savedPosition = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop || 0;
+//   next()
+// },
 // mounted() {
 //   this.isMounted = true;
 //   setTimeout(() => { this.isMounted = false }, 0)

@@ -1,6 +1,6 @@
 <template>
   <section id="home-view">
-    <!-- <div class="top-container">
+     <div class="top-container">
       <div class="part1">
         <h6>实时挖矿收益</h6>
         <p>0.00000103</p>
@@ -8,7 +8,7 @@
       </div>
       <div style="flex: 1"></div>
       <div @click="test" class="part3">
-        <gauge></gauge>
+        <gauge :radius="60"></gauge>
       </div>
     </div>
     <div class="task-container">
@@ -17,7 +17,7 @@
           <p>提升算力，挖矿速度飙升</p><span>500GH/S</span>
         </h5>
         <li>
-          <img src="" alt="">
+          <img :src="iconList[0]" alt="">
           <div>
             <h6>提升算力</h6>
             <p>邀请一位好友注册赠送<br>100GH/S</p>
@@ -33,7 +33,7 @@
         <li v-for="(item, index) in taskList" :key="index" :style="{
             background: item.color
           }">
-          <img src="" alt="">
+          <img :src="iconList[index+1]" alt="">
           <div>
             <h6>{{item.label}}</h6>
             <p>{{item.desc}}</p>
@@ -52,7 +52,7 @@
           <p>邀请好友数量得到的算力，在矿机停止运行时间超过一天则算力失效。降至初始算力。</p>
         </div>
       </div>
-    </div> -->
+    </div>
 
   </section>
 </template>
@@ -60,6 +60,12 @@
 import { Toast, setUserInfo } from '@/global' // getObject copyTextToClipboard
 import { getMyInfo, checkIsActive, getAgentArea } from '@/api'
 // import { menus } from "@/conf/static";
+import fenxiang from './icon_fenxiang.png'
+import qiandao from './icon_qiandao.png'
+import yaoqing from './icon_yaoqing.png'
+import zhuce from './icon_zhuce.png'
+import xiazai from './icon_xiazai.png'
+
 
 import { MessageBox } from 'mint-ui'
 
@@ -68,6 +74,7 @@ const { mapActions, mapMutations } = createNamespacedHelpers('salesData/agent')
 export default {
   data() {
     return {
+      iconList: [yaoqing,zhuce, xiazai, qiandao, fenxiang],
       type: 'agent',
       currentEnergyExpireSecond: 0,
       taskList: [
@@ -163,18 +170,17 @@ export default {
   flex: 1;
 }
 .top-container {
+  margin-bottom: 20px;
   padding: 88px 30px 0;
   width: 100%;
   height: 1274px;
   box-sizing: border-box;
-  box-shadow: 0px 2px 16px 0px rgba(146, 146, 146, 0.5);
-  border-radius: 24px;
   overflow: hidden;
   background: rgba(146, 146, 146, 0.5);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  //background: url("../../img/pic_ditu@2x.png");
+  background: url("../../img/pic_ditu@2x.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 
@@ -288,7 +294,7 @@ export default {
       display: flex;
       align-items: center;
       padding: 0 40px;
-      margin-bottom: 14px;
+      margin-bottom: 28px;
       img {
         display: block;
         width: 120px;

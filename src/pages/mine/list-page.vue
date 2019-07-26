@@ -2,59 +2,90 @@
 <template>
   <section id="withdraw-page">
     <div class="top-bar-container">
-      <button @click="regularTipsIsShow=true"><span>提现规则</span><span>?</span></button>
-      <h4>{{extract}}</h4>
-      <p>历史总收益 ¥{{history}}</p>
+      <button @click="regularTipsIsShow=true"><span>?</span></button>
+      <h4>{{value}}</h4>
+      <p>{{typeLabel}}</p>
     </div>
     <div class="list-container">
-        <h5>3242424</h5>
+        <h5>{{listTitle}}</h5>
+        <span v-if="type == 'extract'">提现结果请前往OMEX查询</span>
       <ul v-show="currentList.length" v-infinite-scroll="loadMore" infinite-scroll-disabled="isLoading" :infinite-scroll-immediate-check="true" infinite-scroll-distance="10">
-        <item1 v-for="item in currentList" :key="item"/>
+        <component class="bottom-border" v-for="item in currentList" :item="item" :key="item" v-bind:is="currentComponent"></component>
       </ul>
       <no-more v-show="currentList.length === 0"></no-more>
     </div>
-    <div class="bottom-container">
-      <button @click="pushRoute('withdraw-record')"><span>提现记录</span></button>
-      <button @click="ApplicationWithdrawal" :disabled="!selected.length" :style="{background: selected.length?'':'#d7b68657'}"><span>申请提现</span></button>
+    <div class="bottom-container" v-if="type !== 'energy'">
+      <button v-if="type == 'acalculationPower'" @click="pushRoute('withdraw-record')"><span>提升算力</span></button>
+      <button v-if="type == 'extract'" @click="pushRoute('withdraw-record')"><span>提现</span></button>
     </div>
   </section>
 </template>
 
 <script>
+
 import item1 from "./item1"
+import item2 from "./item2"
+import item3 from "./item3"
 import { MyError, Toast } from '@/global' // resolveTimeout, rejectTimeout, getObject, Toast
 export default {
+  props: {
+    type: {
+      type: String,
+    }
+  },
   data() {
     return {
       extract: 0, // 累计可提现
-      course: 0, // 用户课程收费
-      history: 0, // 用户总收益
-      knowledge: 0,
-      withdrawList: {
-        // 预估收益
+      value: '',
+      // ['extract','energy','acalculationPower']
+      dataList: {
+        // 数据
         isLoading: false, // 是否在请求中
         list: [], // 数据保存数组
         pageNum: 0, // 当前页码
         total: -1
       },
-      selected: [],
-      regularTipsIsShow: false,
-      bindBankIsShow: false
     }
   },
   components: {
-      item1
+      item1,
+      item2,
+      item3
   },
 
   computed: {
     currentList() {
-      let { list = [] } = this['withdrawList']
-      return [1,2,3,4,5,6]
+      let { list = [] } = this['dataList']
+      return [1,2,3,4,5,6,7,8,9,10,11,12]
     },
     isLoading() {
-      let { isLoading, total } = this['withdrawList']
+      let { isLoading, total } = this['dataList']
       return isLoading || total !== -1
-    }
+    },
+  typeLabel() {
+    let type = this.type
+    return {
+      'extract': "",
+      'energy': "剩余电力(小时)",
+      'acalculationPower': "当前算力"
+    }[type] || ''
+  },
+  currentComponent() {
+    let type = this.type
+    return {
+      'extract': "item3",
+      'energy': "item2",
+      'acalculationPower': "item1"
+    }[type] || ''
+  },
+  listTitle() {
+    let type = this.type
+    return {
+      'extract': "提现记录",
+      'energy': "电力记录",
+      'acalculationPower': "算力记录"
+    }[type] || ''
+  }
   },
 
   mounted() {},
@@ -83,14 +114,14 @@ export default {
     },
     // product-earnings
     loadMore() {
-      let { isLoading = false, total = -1 } = this['withdrawList']
+      let { isLoading = false, total = -1 } = this['dataList']
       if (!isLoading && total === -1) {
         this.fetchList()
       }
     },
     // 拉起列表数据
     fetchList(isReset = false) {
-      let content = this['withdrawList']
+      let content = this['dataList']
       let { isLoading = false, list = [], pageNum = 0, total = -1 } = content
       if (!isReset && isLoading) {
         return Promise.reject(new MyError('不能重复请求', 1))
@@ -136,54 +167,49 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 32px 24px 0;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background: rgba(244, 244, 244, 1);
   align-items: center;
   position: relative;
+  background-image: linear-gradient(179deg, #3F415D 0%, #161725 268px);
 }
 .top-bar-container {
-  width: 100%;
-  height: 360px;
-  box-sizing: border-box;
-  box-shadow: 4px 8px 32px 0px rgba(229, 207, 164, 1);
-  border-radius: 24px;
-  overflow: hidden;
-  background: rgba(146, 146, 146, 0.5);
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  background: url('https://img.mall.xc2018.com.cn/mall/upload/20190511/192644_2_sx5e.jpg');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
   align-items: center;
   justify-content: space-between;
   position: relative;
-  border-radius: 0 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 80px;
+  width: 100%;
+  h4 {
+      font-family: PingFangSC-Medium;
+  font-size: 72px;
+  color: #FFFFFF;
+  letter-spacing: 0;
+  height: 100px;
+  line-height: 100px;
+  margin: 18px 0 10px;
+  }
+  p {
+    height: 40px;
+    line-height: 40px;
+    font-family: PingFangSC-Medium;
+font-size: 28px;
+color: #9C9DAA;
+letter-spacing: 0;
+  }
   & > button {
     position: absolute;
     background: transparent;
     border: none;
-    right: 32px;
-    top: 28px;
-    font-size: 26px;
-    color: rgba(255, 255, 255, 1);
-    padding: 16px;
-    line-height: 37px;
-    letter-spacing: 0.34px;
-    display: flex;
-    align-items: center;
-    & > span:last-of-type {
-      border-radius: 50%;
-      width: 26px;
-      height: 26px;
-      text-align: center;
-      line-height: 26px;
-      box-sizing: content-box;
-      border: 1px solid rgba(237, 237, 237, 1); /* no */
-      margin-left: 10px;
-    }
+    right: 0px;
+    top: 40px;
+    background: #D6A655;
+    border-radius: 100px 0 0 100px;
+    width: 50px;
+    height: 40px;
   }
 }
 .list-container {
@@ -191,69 +217,51 @@ export default {
   flex: 1;
   position: relative;
   width: 100%;
-  overflow-y: scroll; //该属性随着手指离开立即停止
-  -webkit-overflow-scrolling: touch; //该属性随着手指离开还会保持滚动
-  padding-top: 100px;
+  overflow: hidden;
+  padding: 156px 30px 0;
+  background: #FFFFFF;
+border-radius: 60px 60px 0 0;
+box-sizing: border-box;
+        overflow-y: scroll; //该属性随着手指离开立即停止
+    -webkit-overflow-scrolling: touch; //该属性随着手指离开还会保持滚动
   &> h5 {
       position: absolute;
-      top: 50px;
+      top: 70px;
+      font-family: PingFangSC-Medium;
+font-size: 32px;
+color: #202437;
+letter-spacing: 0;
+line-height: 45px;
+height: 45px;
+
   }
+
+  span {
+  font-family: PingFangSC-Regular;
+font-size: 28px;
+color: #A0A3AF;
+letter-spacing: 0;
+height: 40px;
+line-height: 40px;
+position: absolute;
+right: 30px;
+top: 80px;
+}
   ul {
     padding-bottom: 24px;
     box-sizing: border-box;
     height: 100%;
     flex: 1;
     position: absolute;
-    width: 100%;
-    li {
-     
+    width:calc(~"100% - 0.8rem");
+    .bottom-border {
+      border-bottom: 1px solid #E5E5E5;
+      &:last-child {
+        border-bottom: none;
+      }
     }
   }
 }
-.list-item {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-  & > input[type='checkbox'] {
-    width: 40px;
-    height: 40px;
-    opacity: 0;
-  }
-
-  span {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid #999; /*no*/
-    box-sizing: border-box;
-  }
-
-  input:checked + span {
-    background-color: #d7b686;
-    border: 1px solid #d7b686; /*no*/
-    box-sizing: border-box;
-  }
-  input:disabled + span {
-    border: 1px solid #d7b68645; /*no*/
-    box-sizing: border-box;
-  }
-  input:checked + span::after {
-    position: absolute;
-    content: '';
-    width: 10px;
-    height: 20px;
-    top: 3px;
-    left: 9px;
-    border: 4px solid #fff;
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg);
-  }
-}
-
 .bottom-container {
   width: 100vw;
   height: 120px;
@@ -265,86 +273,18 @@ export default {
   button {
     height: 100%;
     flex: 1;
-    color: rgba(215, 182, 134, 1);
-    background: rgba(255, 251, 244, 1);
-    box-sizing: content-box;
-    border: 1px solid rgba(215, 182, 134, 1); /* no */
-    border-radius: 6px;
-    overflow: hidden;
+   background-image: linear-gradient(270deg, #FFD79F 0%, #D4A452 100%);
+border-radius: 62px;
+outline: none;
+border: none;
     span {
-      font-size: 36px;
-      font-family: PingFangSC;
-      line-height: 50px;
-      letter-spacing: 0.58px;
-      color: #d7b686;
+     font-family: PingFangSC-Medium;
+font-size: 36px;
+color: #FFFFFF;
+letter-spacing: 0;
+height: 50px;
+line-height: 50px;
     }
-  }
-  & > button:last-child {
-    margin-left: 24px;
-    background: #d7b686;
-    span {
-      color: white;
-    }
-  }
-}
-
-.pop-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(14, 14, 14, 0.47);
-  box-sizing: border-box;
-  padding: 0 90px;
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.regular-container {
-  width: 100%;
-  height: 700px;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  h5 {
-    height: 56px;
-    font-size: 40px;
-    font-family: PingFangSC;
-    color: rgba(54, 54, 54, 1);
-    line-height: 56px;
-    letter-spacing: 0.44px;
-    margin: 40px 0 48px;
-  }
-  ul {
-    padding: 0 62px 22px;
-    overflow-y: scroll; //该属性随着手指离开立即停止
-    -webkit-overflow-scrolling: touch; //该属性随着手指离开还会保持滚动
-    border-bottom: 1px solid rgba(237, 237, 237, 1); /* no */
-    flex: 1;
-    height: 0;
-    li {
-      font-size: 32px;
-      font-family: PingFangSC;
-      color: rgba(101, 101, 101, 1);
-      line-height: 45px;
-      letter-spacing: 0.35px;
-      margin: 4px 0;
-    }
-  }
-  button {
-    padding: 22px 32px 24px;
-    color: rgba(221, 166, 87, 1);
-    border: none;
-    background: transparent;
-    font-size: 34px;
-    color: rgba(221, 166, 87, 1);
-    line-height: 48px;
-    letter-spacing: 0.37px;
-    font-weight: 600;
   }
 }
 </style>

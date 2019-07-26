@@ -34,8 +34,6 @@ const wxShare = (param) => {
         success,
         cancel
     }
-    alert(4)
-    console.log(shareData)
     wx.showOptionMenu()
     // 获取“分享到朋友圈”按钮点击状态及自定义分享内容接口（即将废弃）
     wx.onMenuShareTimeline(shareData)
@@ -56,7 +54,7 @@ const WXconfigPromise = () => {
     getWXConfig( window.location.href.split('#')[0] // encodeURIComponent(window.location.href.split("#")[0])
     ).then(({wxJsapiSignature = {}, jsApiList = []}) => {
       wx.config({
-        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: wxJsapiSignature.appId || config.appId, // 必填，公众号的唯一标识
         timestamp: wxJsapiSignature.timestamp, // 必填，生成签名的时间戳
         nonceStr: wxJsapiSignature.nonceStr, // 必填，生成签名的随机串
@@ -188,7 +186,6 @@ export const shareMixin = {
 export const AuthorizationToLogin = () => {
     let str = window.location.search.replace(/code.*?&/, "") || "?"
     let redirectUri = window.location.origin + '/login' + str;
-    alert(redirectUri)
     // let redirectUri = config.env==='production' ? 'http://dy.xc2018.com.cn/login'+str : 'http://xcx.wegoo.cn/devtest81/login'+str;
     // let uri = getQueryString('referrer') ? redirectUri.split('?')[0] + '?referrer=' + getQueryString('referrer') : redirectUri.split('?')[0];
     let redirecturi = encodeURIComponent(redirectUri);

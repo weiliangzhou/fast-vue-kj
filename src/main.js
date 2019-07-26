@@ -22,7 +22,7 @@ import Qrcode from "vux/src/components/qrcode";
 promise.polyfill();
 Vue.use(InfiniteScroll);
 // Vue.use(MintUI)
-// Vue.mixin(shouldLoginMixin) // 混入微信config注册与微信分享初始化
+Vue.mixin(shouldLoginMixin) // 混入微信config注册与微信分享初始化
 Vue.mixin(shareMixin);
 Vue.use(Vuex);
 Vue.config.productionTip = false;

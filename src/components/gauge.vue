@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers'
 export default {
   name: 'gauge',
   data() {
