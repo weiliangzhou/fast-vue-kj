@@ -58,8 +58,8 @@ export const TimeFormat = (s) => {
   var hour = Math.floor(s / 3600);
   var minute = Math.floor(s / 60) - hour * 60;
   return [
-    hour ? hour + "时" : "",
-    minute ? minute + "分" : "",
+    hour ? hour + "" : "",
+    minute ? minute + "" : "",
   ].join('') || 0
 }
 export const Yuan = function (value, unit = 100, [left = "¥", right = ""] = []) {

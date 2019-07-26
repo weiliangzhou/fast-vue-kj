@@ -1,7 +1,40 @@
 <!--  -->
 <template>
   <section id="person-container">
+    <div class="userInfo"><img src="" alt="">
+    <h5>sdfsdfsadfadf</h5></div>
+    <div class="accountBalance">
+      <span>账户资金(BTC)</span>
+      <h5>0.00009452</h5>
+      <button>去提现</button>
+    </div>
+    <ul class="menu-container">
+      <li class="menu-item">
+        <img src="" alt="">
+        <p>电力记录</p>
+        <span>二师兄公众号</span>
+      </li>
+        <li class="menu-item">
+        <img src="" alt="">
+        <p>算力值</p>
+        <span>二师兄公众号</span>
+      </li>
+        <li class="menu-item">
+        <img src="" alt="">
+        <p>提币记录</p>
+        <span>二师兄公众号</span>
+      </li>
+    </ul>
 
+     <ul class="bottom-container">
+      <li class="menu-item">
+        <img src="" alt="">
+        <p>电力记录</p>
+        <span>二师兄公众号</span>
+      </li>
+      <div style="flex: 1"></div>
+      <p class="tips">客服电话：0571-62888888</p>
+    </ul>
   </section>
 </template>
 
@@ -28,17 +61,6 @@ export default {
   mounted() {
     let userInfo = getUserInfo();
     let {userRoles = []} = userInfo;
-    this.isAdmin = !!userRoles.find(({ roleName }) => roleName == "admin");
-    this.userInfo = userInfo;
-    this.testSlide = true;
-    this.menusIsShow = true;
-    let createdTime = this.userInfo.createdAt;
-    let dd = Date.now() - (new Date(createdTime.replace(/-/g, "/"))).getTime()
-    this.activeDay = Math.ceil(Math.abs(dd)/(1000*60*60*24))
-    checkIsActive().then(res => {
-        this.currentLevel = res.agentLevel;
-    })
-    this.triggerScoll()
   },
   methods: {
     triggerSupplier() {
@@ -66,296 +88,130 @@ export default {
     }
   },
   activated() {
-        countMessageIsNotRead().then(({ totalNum = 0 } = {}) => {
-        this.badge = totalNum;
-      });
+  
   }
 };
 </script>
 <style lang='less' scoped>
 section[id="person-container"] {
   width: 100vw;
-  height: 100%;
+  min-height: 94vh;
   flex: 1;
   box-sizing: border-box;
-  background: rgba(247, 247, 247, 1);
-  // display: flex;
+  background: #fff;
+  display: flex;
   flex-direction: column;
-  .menu-container {
+  padding: 0 30px;
+  border-bottom: 96px solid transparent;
+}
+.userInfo {
+  display: flex;
+  margin: 40px 0 60px;
+  align-items: center;
+  img {
     display: block;
-    flex: 1;
-    flex-direction: column;
-    margin: 0 24px;
-    background: rgba(255, 255, 255, 1);
-    padding: 0 24px 56px;
-    box-sizing: border-box;
-    border-radius: 6px;
-    box-shadow: 2px 4px 8px 0px rgba(232, 232, 232, 0.5);
-    overflow: hidden;
-    a,
-    button,
-    li {
-      height: 118px;
-      box-sizing: border-box;
-      display: flex;
-      justify-items: center;
-      text-decoration: none;
-      p {
-        margin: auto;
-        margin-right: 20px;
-        i {
-          color: rgba(221, 166, 87, 1);
-          font-size: 40px;
-        }
-      }
-      div {
-        flex: 1;
-        height: 100%;
-        border-bottom: 1px solid rgba(229, 229, 229, 1); /* no */
-        display: flex;
-        box-sizing: border-box;
-        justify-content: space-between;
-        align-items: center;
-        span {
-          height: 45px;
-          font-size: 32px;
-          color: rgba(54, 54, 54, 1);
-          line-height: 45px;
-          letter-spacing: 0.77px;
-        }
-        i {
-          color: rgba(212, 212, 212, 1);
-          font-size: 28px;
-        }
-      }
-    }
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    margin-right: 20px;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  h5 {
+   font-family: PingFangSC-Medium;
+font-size: 40px;
+color: #202437;
+letter-spacing: 0;
+height: 56px;
+line-height: 56px;
+flex: 1;
   }
 }
-.top-container {
-  height: 326px;
+
+.accountBalance {
+  height: 200px;
+  padding: 50px 40px 42px;
   box-sizing: border-box;
-  background-image: linear-gradient(
-    left,
-    rgba(215, 182, 134, 1),
-    rgba(235, 210, 165, 1)
-  );
-  background-clip: content-box;
   display: flex;
-  padding-bottom: 130px;
+  flex-direction: column;
   position: relative;
-  overflow: visible;
-  & > div {
-    flex: 1;
-    height: 294px;
-    width: calc(100% - 48px);
-    margin-top: 32px;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 2px 4px 12px 0px rgba(229, 229, 229, 0.5); /* no */
-    border-radius: 12px;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    right: 24px;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    padding: 0 32px;
-    & > section {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      img {
-        display: block;
-        width: 120px;
-        height: 120px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 50%;
-        margin-right: 20px;
-      }
-      & > ul {
-        h5 {
-          height: 56px;
-          font-size: 40px;
-          color: rgba(54, 54, 54, 1);
-          line-height: 56px;
-          letter-spacing: 0.48px;
-          overflow: hidden;
-          margin-bottom: 14px;
-        }
-        & > li {
-          display: flex;
-          button {
-            border: none;
-            padding: 0 12px;
-            height: 42px;
-            opacity: 1;
-            background: rgba(215, 182, 134, 1);
-            display: flex;
-            align-items: center;
-            border-radius: 6px;
-            overflow: hidden;
-            margin-right: 16px;
-            span {
-              height: 33px;
-              font-size: 24px;
-              color: rgba(255, 255, 255, 1);
-              line-height: 33px;
-              letter-spacing: 0.29px;
-            }
-          }
-          p {
-            height: 40px;
-            font-size: 28px;
-            color: rgba(101, 101, 101, 1);
-            line-height: 40px;
-            letter-spacing: 0.34px;
-          }
-        }
-      }
-    }
-    & > li {
-      height: 86px;
-      border-top: 1px solid rgba(229, 229, 229, 1); /* no */
-      display: flex;
-      align-items: center;
-      p {
-        height: 48px;
-        font-size: 30px;
-        color: rgba(119, 119, 119, 1);
-        line-height: 48px;
-        letter-spacing: 0.36px;
-        span {
-          color: rgba(239, 208, 164, 1);
-        }
-      }
-      i {
-        color: rgba(215, 182, 134, 1);
-        font-size: 36px;
-        margin-right: 22px;
-      }
-    }
+  background: rebeccapurple;
+  border-radius: 20px;
+  span {
+    font-family: PingFangSC-Regular;
+font-size: 24px;
+color: #FFFFFF;
+letter-spacing: 0;
+height: 33px;
+line-height: 33px;
   }
-  margin-bottom: 20px;
+  h5 {
+    font-family: PingFangSC-Medium;
+font-size: 52px;
+color: #FFFFFF;
+letter-spacing: 2px;
+height: 72px;
+line-height: 72px;
+  }
+  button {
+    border: 1px solid #FFFFFF; /* no */
+border-radius: 6px;
+position: absolute;
+top: 50px; right: 40px;
+padding: 10px 18px;
+color: #fff;
+  }
 }
 
-.button-menus {
+.menu-item {
   display: flex;
-  height: 96px;
-  box-shadow: 2px 4px 12px 0px rgba(232, 232, 232, 0.5);
-  border-radius: 6px;
-  margin-bottom: 32px;
-  margin: 0 24px 40px;
-
-  a,
-  li {
-    background: rgba(255, 255, 255, 1);
-    padding: 20px 0;
-    flex: 1;
-    display: flex;
-    display: flex;
-    justify-content: center;
-    text-decoration: none;
-    position: relative;
-    align-items: center;
-    span {
-      height: 45px;
-      font-size: 32px;
-      color: rgba(54, 54, 54, 1);
-      line-height: 45px;
-      letter-spacing: 0.52px;
-      font-weight: 600;
-      margin-left: 40px;
-    }
-  }
-  p {
+  align-items: center;
+  padding: 30px 0;
+  img {
     display: block;
-    width: 1px; /* no */
-    height: 64px;
-    border-radius: 10px;
-    background: #d7b686;
-    margin: auto;
+    margin-right: 8px;
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.3);
+
   }
-  .vip {
-    margin-left: 20px;
-    i {
-      width: 46px;
-      height: 48px;
-      display: inline-block;
-      background: rgba(0, 0, 0, 0.3);
-      background: url("https://img.mall.xc2018.com.cn/mall/upload/20190516/114144_41_2h6b.svg") no-repeat center;
-      background-size: 46px 48px;
+
+      p {
+      font-family: PingFangSC-Regular;
+font-size: 32px;
+color: #202437;
+letter-spacing: 0;
+height: 44px;
+line-height: 44px;
     }
-  }
-  .agent {
-    i {
-      width: 46px;
-      height: 48px;
-      display: inline-block;
-      background: rgba(0, 0, 0, 0.3);
-      background: url("https://img.mall.xc2018.com.cn/mall/upload/20190516/114209_26_flu3.svg") no-repeat center;
-      background-size: 46px 48px;
+    span {
+      flex: 1;
+      font-family: PingFangSC-Regular;
+font-size: 28px;
+color: #A0A3AF;
+letter-spacing: 0;
+height: 40px;
+line-height: 40px;
+text-align: right;
     }
-  }
+
+  
 }
-.suggest {
-    width: 100%;
-    border: none;
-    background: #fff;
-    outline: none;
-    height: 118px;
-    align-items: center;
-    p {
-      width: 38px;
-      height: 34px;
-      margin-right: 20px;
-      display: inline-block;
-      border: none;
-      outline: none;
-      background: url("./fankui.png") no-repeat center;
-      background-size: 38px 34px;
-    }
-    div {
-        display: inline-flex !important;
-        height: 118px !important;
-        box-sizing: border-box;
-    }
+.bottom-container {
+  background: #fff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-top: 20px solid #F6F7FB;
 }
-.suggest1 {
-    width: 100%;
-    border: none;
-    background: #fff;
-    outline: none;
-    height: 118px;
-    align-items: center;
-    p {
-      width: 36px;
-      height: 40px;
-      margin-right: 20px;
-      display: inline-block;
-      border: none;
-      outline: none;
-      background: url("./interest.png") no-repeat center;
-      background-size: 100% 100%;
-    }
-    div {
-        display: inline-flex !important;
-        height: 118px !important;
-        box-sizing: border-box;
-    }
-}
-.messagePoint {
-    position: relative;
-    &:after {
-        display: block;
-        position: absolute;
-        content: " ";
-        width: 6px; /* no */
-        height: 6px; /* no */
-        border-radius: 50%;
-        top: -3px;  /* no */
-        right: -3px; /* no */
-        background: rgba(199,0,10,1);
-    }
+.tips {
+  height: 33px;
+  line-height: 33px;
+  font-family: PingFangSC-Regular;
+font-size: 24px;
+color: #C6C8D1;
+letter-spacing: 0;
+text-align: center;
+margin-bottom: 20px;
 }
 </style>
 <style>

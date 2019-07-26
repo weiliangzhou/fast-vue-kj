@@ -56,7 +56,7 @@ const router = new Router({
 })
 router.beforeEach((to, from, next) => {
     let { code, referUid } = to.query
-    // code = '011FByWq1FX24m0YgqYq1rEPWq1FByWJ'
+    //code = '001aDVFJ1LG8s40XG3IJ1DdOFJ1aDVFO'
     const isLogined = checkIsLogined()
     if(isLogined) {
         next()

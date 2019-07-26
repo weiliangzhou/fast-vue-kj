@@ -11,7 +11,6 @@ export default {
   name: 'gauge',
   data() {
     return {
-      radius: 120,
       lineWidth: 2,
       nowrange: 0.4,
       range: 0.4,
@@ -20,7 +19,12 @@ export default {
       data: 20 // 数据量
     }
   },
-
+  props: {
+          radius: {
+            type: Number,
+            default: 80
+          }
+  },
   components: {},
 
   computed: {
@@ -230,4 +234,7 @@ export default {
 }
 </script>
 <style lang='less' scoped>
+canvas {
+   pointer-events: none;
+}
 </style>

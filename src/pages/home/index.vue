@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <section id="home-container">
-      <div style="width: 100%" ref="homeContainer">
+      <div style="width: 100%;" ref="homeContainer">
         <transition>
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive"></router-view>
