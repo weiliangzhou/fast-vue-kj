@@ -1,5 +1,19 @@
 export default [
   {
+    /**
+     *    courseId 套课id
+     *
+     */
+    path: "/test",
+    name: "test",
+    meta: {
+      keepAlive: true,
+      title: "首页",
+      shareInfo: {}
+    },
+    component: () => import("@/pages/mine/list-page")
+  },
+  {
     path: "/home",
     meta: {
       shareInfo: {},

@@ -67,9 +67,9 @@ export default {
     this.updateCanvas()
   },
   beforeDestroy() {
+    window.cancelAnimationFrame(this.animation)
     this.animation = null
     this.ctx = null
-    window.cancelAnimationFrame(this.animation)
   },
   methods: {
     drawSine() {

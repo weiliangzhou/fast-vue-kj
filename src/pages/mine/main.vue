@@ -1,14 +1,15 @@
 <!--  -->
 <template>
   <section id="person-container">
-    <div class="userInfo"><img src="" alt="">
+    <div class="userInfo">
+      <img src="" alt="">
     <h5>sdfsdfsadfadf</h5></div>
-    <div class="accountBalance">
+    <!-- <div class="accountBalance">
       <span>账户资金(BTC)</span>
       <h5>0.00009452</h5>
       <button>去提现</button>
-    </div>
-    <ul class="menu-container">
+    </div> -->
+    <!-- <ul class="menu-container">
       <li class="menu-item">
         <img src="" alt="">
         <p>电力记录</p>
@@ -24,13 +25,13 @@
         <p>提币记录</p>
         <span>二师兄公众号</span>
       </li>
-    </ul>
+    </ul> -->
 
      <ul class="bottom-container">
-      <li class="menu-item">
+      <li class="menu-item afterIcon">
         <img src="" alt="">
-        <p>电力记录</p>
-        <span>二师兄公众号</span>
+        <p>略略略略</p>
+        <span>哈撒个</span>
       </li>
       <div style="flex: 1"></div>
       <p class="tips">客服电话：0571-62888888</p>
@@ -213,10 +214,25 @@ letter-spacing: 0;
 text-align: center;
 margin-bottom: 20px;
 }
-</style>
-<style>
-.reward-popup .vux-popup-dialog {
-  background: none;
-  border-radius: 0.266667rem 0.266667rem 0 0;
+
+.afterIcon {
+  position: relative;
+  padding-right: 26px;
+  box-sizing: border-box;
 }
+.afterIcon:after {
+    display: inline-block;
+    content: " ";
+    height: 22px;
+    width: 22px;
+    border-width: 3px 3px 0 0;
+    border-color: #c7c7cc;
+    border-style: solid;
+    transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -16px;
+  }
 </style>
+

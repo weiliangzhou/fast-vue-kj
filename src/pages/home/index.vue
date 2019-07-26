@@ -16,10 +16,6 @@
         <i class="iconfont icon-fenxiaoshangguanlix1 img1"></i>
         <span>分销商</span>
       </router-link>
-      <router-link to="/home/course" replace>
-        <i class="iconfont icon-fenxiaoshangguanlicopyx img1"></i>
-        <span>产品</span>
-      </router-link>
       <router-link to="/home/personal" replace>
         <i class="iconfont icon-wodex2 img1"></i>
         <span>我的</span>
@@ -61,7 +57,7 @@ export default {
       this.$refs.homeContainer.style.WebkitTransform = `translateX(${this.posX}px)`;
     },
     ontouchend(e) {
-        let routers = ["/home/index", "/home/course", "/home/personal"];
+        let routers = ["/home/index", "/home/personal"];
         var router = this.$router;
        let routerIndex = routers.indexOf(router.currentRoute.path)
         if (this.posX < -50 && routerIndex!==2 && routerIndex > -1) {

@@ -1,16 +1,13 @@
 <template>
   <section id="home-view">
-    <div class="top-container">
+    <!-- <div class="top-container">
       <div class="part1">
         <h6>实时挖矿收益</h6>
         <p>0.00000103</p>
         <button><span>提币</span></button>
       </div>
       <div style="flex: 1"></div>
-      <div
-        @click="test"
-        class="part3"
-      >
+      <div @click="test" class="part3">
         <gauge></gauge>
       </div>
     </div>
@@ -20,14 +17,10 @@
           <p>提升算力，挖矿速度飙升</p><span>500GH/S</span>
         </h5>
         <li>
-          <img
-            src=""
-            alt=""
-          >
+          <img src="" alt="">
           <div>
             <h6>提升算力</h6>
-            <p>邀请一位好友注册赠送<br>
-              100GH/S</p>
+            <p>邀请一位好友注册赠送<br>100GH/S</p>
           </div>
           <button><span>立即领取</span></button>
         </li>
@@ -37,17 +30,10 @@
         <h5>
           <p>完成任务赢电力</p><span>0GH</span>
         </h5>
-        <li
-          v-for="(item, index) in taskList"
-          :key="index"
-          :style="{
+        <li v-for="(item, index) in taskList" :key="index" :style="{
             background: item.color
-          }"
-        >
-          <img
-            src=""
-            alt=""
-          >
+          }">
+          <img src="" alt="">
           <div>
             <h6>{{item.label}}</h6>
             <p>{{item.desc}}</p>
@@ -66,98 +52,98 @@
           <p>邀请好友数量得到的算力，在矿机停止运行时间超过一天则算力失效。降至初始算力。</p>
         </div>
       </div>
-    </div>
+    </div> -->
 
   </section>
 </template>
 <script>
-import { Toast, setUserInfo } from "@/global"; // getObject copyTextToClipboard
-import { getMyInfo, checkIsActive, getAgentArea } from "@/api";
+import { Toast, setUserInfo } from '@/global' // getObject copyTextToClipboard
+import { getMyInfo, checkIsActive, getAgentArea } from '@/api'
 // import { menus } from "@/conf/static";
 
-import { MessageBox } from "mint-ui";
+import { MessageBox } from 'mint-ui'
 
-import { createNamespacedHelpers } from "vuex";
-const { mapActions, mapMutations } = createNamespacedHelpers("salesData/agent");
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapMutations } = createNamespacedHelpers('salesData/agent')
 export default {
   data() {
     return {
-      type: "agent",
+      type: 'agent',
       currentEnergyExpireSecond: 0,
       taskList: [
         {
-          label: "注册赢电力",
-          desc: "新用户一次性赠送120\n小时电力",
-          buttonText: "立即领取",
-          color: "#FFB400"
+          label: '注册赢电力',
+          desc: '新用户一次性赠送120\n小时电力',
+          buttonText: '立即领取',
+          color: '#FFB400'
         },
         {
-          label: "下载赢电力",
-          desc: "下载APP，注册领取\n300USDT",
-          buttonText: "立即领取",
-          color: "#00C0AC"
+          label: '下载赢电力',
+          desc: '下载APP，注册领取\n300USDT',
+          buttonText: '立即领取',
+          color: '#00C0AC'
         },
         {
-          label: "每日签到",
-          desc: "签到打卡领取电力",
-          buttonText: "立即领取",
-          color: "#FF461A"
+          label: '每日签到',
+          desc: '签到打卡领取电力',
+          buttonText: '立即领取',
+          color: '#FF461A'
         },
         {
-          label: "每日分享",
-          desc: "每日可分享一次加电力",
-          buttonText: "立即分享",
-          color: "#6868E7"
+          label: '每日分享',
+          desc: '每日可分享一次加电力',
+          buttonText: '立即分享',
+          color: '#6868E7'
         }
       ]
-    };
+    }
   },
   computed: {},
 
   mounted() {},
   methods: {
     test() {
-      alert(888);
+      alert(888)
     },
     onTouchStart() {
-      e.preventDefault();
+      e.preventDefault()
       this.state.int = setInterval(() => {
-        this.showLeftTime(60);
-      }, 20);
+        this.showLeftTime(60)
+      }, 20)
     },
     // 长按松开事件
     onTouchEnd() {
-      const { currentEnergyExpireSecond, replaceEnergy } = this.state;
+      const { currentEnergyExpireSecond, replaceEnergy } = this.state
       /**
        * 得到加了多少时间，如果增加时间大于0小时，就调用充电接口
        *  */
-      let hours = Number(currentEnergyExpireSecond) - Number(replaceEnergy);
+      let hours = Number(currentEnergyExpireSecond) - Number(replaceEnergy)
       if (hours != 0) {
-        let result = hours / 3600;
+        let result = hours / 3600
         let splitLen =
-          result.toString().split(".")[1] &&
-          result.toString().split(".")[1].length;
+          result.toString().split('.')[1] &&
+          result.toString().split('.')[1].length
         if (splitLen) {
-          let res = result.toFixed();
-          this.chargeData(res + 1);
+          let res = result.toFixed()
+          this.chargeData(res + 1)
         } else {
-          let res2 = result.toFixed();
-          this.chargeData(res2);
+          let res2 = result.toFixed()
+          this.chargeData(res2)
         }
       }
       // 松开后时间不是0就开始倒计时，并清除时间加定时器
       if (this.state.currentEnergyExpireSecond != 0) {
-        this.countDown(1);
-        clearInterval(this.state.int);
+        this.countDown(1)
+        clearInterval(this.state.int)
       }
     }
   },
   activated() {},
   beforeRouteLeave(to, from, next) {
-    this.stickyIsShow = false;
-    next();
+    this.stickyIsShow = false
+    next()
   }
-};
+}
 </script>
 
 <style lang='less' scoped>
@@ -188,7 +174,7 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  background: url("../../img/pic_ditu@2x.png");
+  //background: url("../../img/pic_ditu@2x.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 
