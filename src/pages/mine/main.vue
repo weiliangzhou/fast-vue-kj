@@ -2,57 +2,56 @@
 <template>
   <section id="person-container">
     <div class="userInfo">
-      <img
-        :src="headImgUrl"
-        alt=""
-      >
+      <img :src="headImgUrl" alt="">
       <div>
         <h5>{{nickName}}</h5>
         <p>已挖矿50天</p>
       </div>
-      
+
     </div>
     <div class="accountBalance">
       <span>账户资金(BTC)</span>
-      <h5>0.00009452</h5>
+      <h5>{{balance}}</h5>
       <button>去提现</button>
     </div>
     <ul class="menu-container">
       <li class="menu-item afterIcon" @click="pushRoute('energy')">
-        <img
-          src=""
-          alt=""
-        >
+        <span>
+          <svg class="icon gongzhonghao-icon" aria-hidden="true">
+            <use xlink:href="#iconpower" />
+          </svg>
+        </span>
+
         <p>电力记录</p>
         <span></span>
       </li>
       <li class="menu-item afterIcon" @click="pushRoute('acalculationPower')">
-        <img
-          src=""
-          alt=""
-        >
+        <span>
+          <svg class="icon gongzhonghao-icon" aria-hidden="true">
+            <use xlink:href="#iconCalculation" />
+          </svg>
+        </span>
         <p>算力记录</p>
         <span></span>
       </li>
       <li class="menu-item afterIcon" @click="pushRoute('extract')">
-        <img
-          src=""
-          alt=""
-        >
+        <span>
+          <svg class="icon gongzhonghao-icon" aria-hidden="true">
+            <use xlink:href="#iconbill" />
+          </svg>
+        </span>
         <p>提币记录</p>
         <span></span>
       </li>
     </ul>
 
     <ul class="bottom-container">
-      <li
-        class="menu-item afterIcon"
-        @click="subscribeImgIsShow=true"
-      >
-        <img
-          src=""
-          alt=""
-        >
+      <li class="menu-item afterIcon" @click="subscribeImgIsShow=true">
+        <span>
+          <svg class="icon gongzhonghao-icon" aria-hidden="true">
+            <use xlink:href="#iconcenter" />
+          </svg>
+        </span>
         <p>关注公众号</p>
         <span>哈撒个</span>
       </li>
@@ -60,25 +59,13 @@
       <p class="tips">客服电话：0571-62888888</p>
     </ul>
 
-    <transition
-      enter-active-class="animated zoomIn"
-      leave-active-class="animated zoomOut"
-    >
+    <transition enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
 
-      <section
-        v-if="subscribeImgIsShow"
-        class="dialogs"
-      >
+      <section v-if="subscribeImgIsShow" class="dialogs">
         <div class="referrer-container">
-          <img
-            :src="subscribeImg"
-            alt=""
-          >
+          <img :src="subscribeImg" alt="">
           <div class="button-group">
-            <button
-              class="close-button"
-              @click="subscribeImgIsShow=false"
-            ></button>
+            <button class="close-button" @click="subscribeImgIsShow=false"></button>
           </div>
         </div>
       </section>
@@ -87,41 +74,35 @@
 </template>
 
 <script>
-import { checkIsActive, countMessageIsNotRead } from "@/api";
-import { Toast, getUserInfo } from "@/global"; // resolveTimeout, rejectTimeout
-import subscribeImg from "./QRcode.png";
+import { getCurrentUserInfo } from '@/api'
+import { Toast, getUserInfo } from '@/global' // resolveTimeout, rejectTimeout
+import subscribeImg from './QRcode.png'
 export default {
   data() {
     return {
       subscribeImg,
       subscribeImgIsShow: false,
-      headImgUrl: "",
-      nickName: ""
-    };
+      headImgUrl: '',
+      nickName: '',
+      balance: 0
+    }
   },
   computed: {},
 
   mounted() {
-    let userInfo = getUserInfo();
-    let { headImgUrl, nickName } = userInfo;
-    Object.assign(this, {headImgUrl, nickName})
+    let userInfo = getUserInfo()
+    let { headImgUrl, nickName } = userInfo
+    Object.assign(this, { headImgUrl, nickName })
+    getCurrentUserInfo().then(res=> {
+      this.balance = res || 0
+    })
   },
   methods: {
-    
-    goSuggest() {
-      // 跳到商城的反馈
-      let origin = "http://tmall.xc2018.com.cn";
-      if (location.origin.indexOf("//sales") !== -1) {
-        origin = "https://mall.xc2018.com.cn";
-      }
-      window.location.href = `${origin}/feedback`;
-    }
   },
-  activated() {}
-};
+}
 </script>
 <style lang='less' scoped>
-section[id="person-container"] {
+section[id='person-container'] {
   width: 100vw;
   min-height: 94vh;
   flex: 1;
@@ -144,26 +125,26 @@ section[id="person-container"] {
     margin-right: 20px;
     background: rgba(0, 0, 0, 0.3);
   }
- 　&>div {
+  　& > div {
     h5 {
-    font-family: PingFangSC-Medium;
-    font-size: 40px;
-    color: #202437;
-    letter-spacing: 0;
-    height: 56px;
-    line-height: 56px;
-    flex: 1;
+      font-family: PingFangSC-Medium;
+      font-size: 40px;
+      color: #202437;
+      letter-spacing: 0;
+      height: 56px;
+      line-height: 56px;
+      flex: 1;
+    }
+    p {
+      font-family: PingFangSC-Medium;
+      font-size: 26px;
+      color: #999999;
+      letter-spacing: 0;
+      height: 37px;
+      line-height: 37px;
+      margin-top: 4px;
+    }
   }
-  p {
-    font-family: PingFangSC-Medium;
-font-size: 26px;
-color: #999999;
-letter-spacing: 0;
-height: 37px;
-line-height: 37px;
-margin-top: 4px
-  }
- }
 }
 
 .accountBalance {
@@ -175,7 +156,7 @@ margin-top: 4px
   position: relative;
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  background: url("./account_bg.png");
+  background: url('./account_bg.png');
   border-radius: 20px;
   span {
     font-family: PingFangSC-Regular;
@@ -209,14 +190,9 @@ margin-top: 4px
   display: flex;
   align-items: center;
   padding: 30px 0;
-  img {
-    display: block;
-    margin-right: 8px;
-    width: 48px;
-    height: 48px;
-    background: rgba(0, 0, 0, 0.3);
-  }
-
+&>span:first-of-type {
+  margin-right: 16px;
+}
   p {
     font-family: PingFangSC-Regular;
     font-size: 32px;
@@ -225,7 +201,7 @@ margin-top: 4px
     height: 44px;
     line-height: 44px;
   }
-  span {
+  &>span:last-of-type {
     flex: 1;
     font-family: PingFangSC-Regular;
     font-size: 28px;
@@ -258,11 +234,10 @@ margin-top: 4px
   position: relative;
   padding-right: 46px;
   box-sizing: border-box;
-
 }
 .afterIcon:after {
   display: inline-block;
-  content: " ";
+  content: ' ';
   height: 22px;
   width: 22px;
   border-width: 3px 3px 0 0;
@@ -323,7 +298,7 @@ margin-top: 4px
       &:after {
         display: inline-block;
         position: absolute;
-        content: " ";
+        content: ' ';
         height: 100px;
         width: 2px;
         margin: 0 auto;
@@ -346,7 +321,7 @@ margin-top: 4px
         box-sizing: content-box;
         &:after {
           display: inline-block;
-          content: " ";
+          content: ' ';
           height: 22px;
           width: 22px;
           border-width: 2px 2px 0 0;
@@ -379,7 +354,7 @@ margin-top: 4px
         &:after {
           display: inline-block;
           position: absolute;
-          content: " ";
+          content: ' ';
           height: 4px;
           width: 70%;
           background: #fff;
@@ -394,7 +369,7 @@ margin-top: 4px
         &:before {
           display: inline-block;
           position: absolute;
-          content: " ";
+          content: ' ';
           height: 4px;
           width: 70%;
           background: #fff;

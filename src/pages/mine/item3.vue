@@ -1,7 +1,7 @@
 <template>
   <li>
     <div>
-      <h5><span>提币数量</span><span>0.00000294 btc</span></h5>
+      <h5 class="ellipsis_1"><span>提币数量</span><span>0.00000294 btc</span></h5>
       <p>2019-06-27 23:34:56</p>
     </div>
     <button><span>查询结果</span></button>
@@ -12,11 +12,11 @@
 export default {
   props: {
     item: {
-      type: Number,
-      // default: () => ({})
+      type: Object,
+      default: () => ({})
     }
   }
-};
+}
 </script>
 <style lang="less" scoped>
 li {
@@ -26,17 +26,18 @@ li {
   & > div {
     flex: 1;
     margin-right: 20px;
+    width: 0;
     h5 {
-        &>span:first-of-type {
-          ont-family: PingFangSC-Regular;
-font-size: 28px;
-color: #797E8B;
-letter-spacing: 0;
-height: 40px;
-line-height: 40px;
-margin-right: 20px;
+      & > span:first-of-type {
+        ont-family: PingFangSC-Regular;
+        font-size: 28px;
+        color: #797e8b;
+        letter-spacing: 0;
+        height: 40px;
+        line-height: 40px;
+        margin-right: 20px;
       }
-      &>span:last-of-type {
+      & > span:last-of-type {
         font-family: PingFangSC-Medium;
         font-size: 28px;
         color: #515666;
@@ -55,16 +56,16 @@ margin-right: 20px;
     }
   }
   button {
-      border: none;
-      background: none;
-      span {
-            height: 40px;
-            line-height: 40px;
-            font-family: PingFangSC-Regular;
-font-size: 28px;
-color: #3B6EF1;
-letter-spacing: 0;
-      }
+    border: none;
+    background: none;
+    span {
+      height: 40px;
+      line-height: 40px;
+      font-family: PingFangSC-Regular;
+      font-size: 28px;
+      color: #3b6ef1;
+      letter-spacing: 0;
+    }
   }
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
   <li>
     <div>
-      <h5>二师***加入</h5>
-      <p>2019-06-27 23:34:56</p>
+      <h5 class="ellipsis_1">{{item.nickname}}</h5>
+      <p>{{item.updateTime}}</p>
     </div>
-    <button><span>+100GH/S{{item}}</span></button>
+    <button><span>{{typeLabel}}{{item.powerValue}}GH/S</span></button>
   </li>
 </template>
 
@@ -12,8 +12,17 @@
 export default {
   props: {
     item: {
-      type: Number,
-      // default: () => ({})
+      type: Object,
+      default: () => ({})
+    }
+  },
+  computed: {
+    typeLabel() {
+      if(this.type == -1) {
+        return '-'
+      } else {
+        return "+"
+      }
     }
   }
 };
@@ -26,6 +35,7 @@ li {
   & > div {
     flex: 1;
     margin-right: 20px;
+    width: 0;
     h5 {
       font-family: PingFangSC-Regular;
       font-size: 32px;
@@ -34,6 +44,7 @@ li {
       height: 46px;
       line-height: 46px;
       margin-bottom: 8px;
+      max-width: 80%;
     }
     p {
       font-family: PingFangSC-Regular;

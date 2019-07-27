@@ -19,7 +19,7 @@ service.interceptors.request.use(
     token &&
       token !== "undefined" &&
       !/^https?:\/\//.test(config.url) &&
-      (config.headers["Authorization"] = "" + token);
+      (config.headers["Authorization"] = "4d13fbc5df4c4e149b4c6cdead106604");
     if (method == "post") {
       type !== "json" && (config.transformRequest = [transform]);
       let typesObj = {

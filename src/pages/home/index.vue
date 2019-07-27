@@ -1,25 +1,45 @@
 <!--  -->
 <template>
   <section id="home-container">
-      <div style="width: 100%;" ref="homeContainer">
-        <transition>
-      <keep-alive>
-        <router-view v-if="$route.meta.keepAlive"></router-view>
-      </keep-alive>
-    </transition>
-    <transition>
-      <router-view v-if="!$route.meta.keepAlive"></router-view>
-    </transition>
-      </div>
+    <div style="width: 100%;" ref="homeContainer">
+      <transition>
+        <keep-alive>
+          <router-view v-if="$route.meta.keepAlive"></router-view>
+        </keep-alive>
+      </transition>
+      <transition>
+        <router-view v-if="!$route.meta.keepAlive"></router-view>
+      </transition>
+    </div>
     <footer class="tabs-container">
-      <router-link to="/home/index" replace>
-        <i class="iconfont icon-fenxiaoshangguanlix1 img1"></i>
-        <span>分销商</span>
-      </router-link>
-      <router-link to="/home/personal" replace>
-        <i class="iconfont icon-wodex2 img1"></i>
-        <span>我的</span>
-      </router-link>
+      <template v-if="$route.name=='home'">
+        <router-link to="/home/index" replace>
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href='#iconhome_color'></use>
+          </svg>
+          <span>首页</span>
+        </router-link>
+        <router-link to="/home/personal" replace>
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#iconmy"></use>
+          </svg>
+          <span>我的</span>
+        </router-link>
+      </template>
+      <template v-else>
+        <router-link to="/home/index" replace>
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href='#iconhome'></use>
+          </svg>
+          <span>首页</span>
+        </router-link>
+        <router-link to="/home/personal" replace>
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#iconmy1"></use>
+          </svg>
+          <span>我的</span>
+        </router-link>
+      </template>
     </footer>
   </section>
 </template>
@@ -29,51 +49,51 @@ export default {
     return {
       posX: 0,
       startX: 0
-    };
+    }
   },
   computed: {},
 
   mounted() {
-   // this.addOrRemoveEvent("add")
+    // this.addOrRemoveEvent("add")
   },
 
   methods: {
     addOrRemoveEvent(type) {
-        let homeContainer = this.$refs.homeContainer;
-        homeContainer[type+'EventListener']("touchstart", this.ontouchstart);
-        homeContainer[type+'EventListener']("touchmove", this.ontouchmove);
-        homeContainer[type+'EventListener']("touchend", this.ontouchend);
+      let homeContainer = this.$refs.homeContainer
+      homeContainer[type + 'EventListener']('touchstart', this.ontouchstart)
+      homeContainer[type + 'EventListener']('touchmove', this.ontouchmove)
+      homeContainer[type + 'EventListener']('touchend', this.ontouchend)
     },
     ontouchstart(e) {
-      this.startX = e.touches[0].pageX;
-      this.$refs.homeContainer.style.transform = `translateX(${this.posX}px)`;
-      this.$refs.homeContainer.style.WebkitTransform = `translateX(${this.posX}px)`;
+      this.startX = e.touches[0].pageX
+      this.$refs.homeContainer.style.transform = `translateX(${this.posX}px)`
+      this.$refs.homeContainer.style.WebkitTransform = `translateX(${this.posX}px)`
     },
     ontouchmove(e) {
-      var moveEndX = e.changedTouches[0].pageX;
-      var X = moveEndX - this.startX;
-      this.posX = X;
-      this.$refs.homeContainer.style.transform = `translateX(${this.posX}px)`;
-      this.$refs.homeContainer.style.WebkitTransform = `translateX(${this.posX}px)`;
+      var moveEndX = e.changedTouches[0].pageX
+      var X = moveEndX - this.startX
+      this.posX = X
+      this.$refs.homeContainer.style.transform = `translateX(${this.posX}px)`
+      this.$refs.homeContainer.style.WebkitTransform = `translateX(${this.posX}px)`
     },
     ontouchend(e) {
-        let routers = ["/home/index", "/home/personal"];
-        var router = this.$router;
-       let routerIndex = routers.indexOf(router.currentRoute.path)
-        if (this.posX < -50 && routerIndex!==2 && routerIndex > -1) {
-            router.replace(routers[routerIndex+1])
-        } else if (this.posX > 50 && routerIndex > 0) {
-           router.replace(routers[routerIndex-1])
+      let routers = ['/home/index', '/home/personal']
+      var router = this.$router
+      let routerIndex = routers.indexOf(router.currentRoute.path)
+      if (this.posX < -50 && routerIndex !== 2 && routerIndex > -1) {
+        router.replace(routers[routerIndex + 1])
+      } else if (this.posX > 50 && routerIndex > 0) {
+        router.replace(routers[routerIndex - 1])
       }
-      this.posX = 0;
-      this.$refs.homeContainer.style.transform = `unset`;
-      this.$refs.homeContainer.style.WebkitTransform = `unset`;
-    },
+      this.posX = 0
+      this.$refs.homeContainer.style.transform = `unset`
+      this.$refs.homeContainer.style.WebkitTransform = `unset`
+    }
   },
   beforeDestroy() {
     // this.addOrRemoveEvent("remove")
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -106,6 +126,7 @@ export default {
   bottom: 0;
   right: 0;
   padding-top: 6px;
+  border-top: 1px solid #E5E5E5;/*no*/
   & > a {
     display: flex;
     flex-direction: column;
@@ -119,14 +140,21 @@ export default {
     letter-spacing: 0.53px;
     span {
       margin-top: 10px;
+      font-family: PingFangSC-Regular;
+      font-size: 24px;
+      color: #C6C8D1;
+      letter-spacing: 0;
+      height: 33px;
+      line-height: 33px;
     }
-    i {
-      font-size: 44px;
+    svg {
+      width: 44px;
+      height: 44px;
     }
   }
   .router-link-active {
     text-decoration: none;
-    color: rgba(215, 182, 134, 1);
+    color: rgb(220, 170, 95);
   }
 }
 

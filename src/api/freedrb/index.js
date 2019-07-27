@@ -68,7 +68,7 @@ export const energyConsume = hours => {
 
 export const energyInfo = () => {
   return axios.request({
-    url: "/api/user/energy/Info",
+    url: "/api/user/energy/info",
     method: "get",
     data: {}
   });
@@ -76,7 +76,7 @@ export const energyInfo = () => {
 
 export const homepageInfo = () => {
   return axios.request({
-    url: "/api/user/homepage/Info",
+    url: "/api/user/homepage/info",
     method: "get",
     data: {}
   });
@@ -92,42 +92,73 @@ export const completeTask = taskId => {
   });
 };
 
-export const energyGetPage = ({ pageNum = 1, pageSize = 10 }) => {
-  return axios.request({
-    url: "/api/user/energy/getPage",
-    method: "get",
-    data: {
-      pageSize,
-      pageNum
-    }
-  });
-};
 export const getCurrentUserInfo = () => {
   return axios.request({
-    url: "/api/user/user_account/info",
+    url: "/api/user/user/user_account/info",
     method: "get",
     data: {}
   });
 };
+
+export const energyGetPage = ({ pageNum = 1, pageSize = 10 }) => {
+  return axios
+    .request({
+      url: "/api/user/energy/getPage",
+      method: "get",
+      data: {
+        pageSize,
+        pageNum
+      }
+    })
+    .then(({ ableEnergy: data, userEnergyIPage: { records = [] } = {} }) => {
+      return {
+        data,
+        records
+      };
+    });
+};
+
 export const getExtractPage = ({ pageNum = 1, pageSize = 10 }) => {
-  return axios.request({
-    url: "/api/user/account/getExtractPage",
-    method: "get",
-    data: {
-      pageSize,
-      pageNum
-    }
-  });
+  return axios
+    .request({
+      url: "/api/user/account/getExtractPage",
+      method: "get",
+      data: {
+        pageSize,
+        pageNum
+      }
+    })
+    .then(
+      ({ balance: data, total, userAccountIPage: { records = [] } = {} }) => {
+        return {
+          data,
+          records,
+          total
+        };
+      }
+    );
 };
 export const acalculationPower = ({ pageNum = 1, pageSize = 10 }) => {
-  return axios.request({
-    url: "/api/user/acalculationPower/getPage",
-    method: "get",
-    data: {
-      pageSize,
-      pageNum
-    }
-  });
+  return axios
+    .request({
+      url: "/api/user/calculationPower/getPage",
+      method: "get",
+      data: {
+        pageSize,
+        pageNum
+      }
+    })
+    .then(
+      ({
+        ablePower: data,
+        userCalculationPowerIPage: { records = [] } = {}
+      }) => {
+        return {
+          data,
+          records
+        };
+      }
+    );
 };
 
 // 获取微信jsApiList

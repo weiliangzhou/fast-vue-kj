@@ -10,7 +10,7 @@
         <h5>{{listTitle}}</h5>
         <span v-if="type == 'extract'">提现结果请前往OMEX查询</span>
       <ul v-show="currentList.length" v-infinite-scroll="loadMore" infinite-scroll-disabled="isLoading" :infinite-scroll-immediate-check="true" infinite-scroll-distance="10">
-        <component class="bottom-border" v-for="item in currentList" :item="item" :key="item" v-bind:is="currentComponent"></component>
+        <component class="bottom-border" v-for="item in currentList" :item="item" :key="item.id" v-bind:is="currentComponent"></component>
       </ul>
       <no-more v-show="currentList.length === 0"></no-more>
     </div>
@@ -27,6 +27,7 @@ import item1 from "./item1"
 import item2 from "./item2"
 import item3 from "./item3"
 import { MyError, Toast } from '@/global' // resolveTimeout, rejectTimeout, getObject, Toast
+import { acalculationPower, getExtractPage, energyGetPage } from "@/api"
 export default {
   props: {
     type: {
@@ -56,7 +57,7 @@ export default {
   computed: {
     currentList() {
       let { list = [] } = this['dataList']
-      return [1,2,3,4,5,6,7,8,9,10,11,12]
+      return list
     },
     isLoading() {
       let { isLoading, total } = this['dataList']
@@ -88,7 +89,9 @@ export default {
   }
   },
 
-  mounted() {},
+  mounted() {
+   this.fetchList(true)
+  },
 
   methods: {
     ApplicationWithdrawal() {
@@ -138,16 +141,23 @@ export default {
           })
         }
         content.isLoading = true
-        return findSaleUserBillList({
+        let shouldFetch = {
+      'extract': getExtractPage,
+      'energy': energyGetPage,
+      'acalculationPower': acalculationPower
+    }[this.type] || energyGetPage
+       
+        return shouldFetch({
           pageSize: 15,
           pageNum: pageNum + 1
         })
-          .then(res => {
-            let tempList = [...list, ...res]
+          .then(({data, total, records}) => {
+            let tempList = [...list, ...records]
+            this.value = data;
             Object.assign(content, {
               list: tempList,
-              pageNum: res.length ? pageNum + 1 : pageNum,
-              total: res.length ? -1 : tempList.length,
+              pageNum: records.length ? pageNum + 1 : pageNum,
+              total: records.length ? -1 : tempList.length,
               isLoading: false
             })
           })
