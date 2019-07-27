@@ -23,7 +23,7 @@ export function timestamp(url) {
 let getImg = url => {
     return new Promise((resolve, reject) => {
         if (!(url && url.substr(0, 5) === "data:")) {
-            url += `?test=123`;
+            url += ``;
         }
         let img = new Image();
         img.crossOrigin = "Anonymous";

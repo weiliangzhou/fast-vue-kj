@@ -1,18 +1,19 @@
 <!--  -->
 <template>
   <section id="person-container">
+     <img :src="subscribeImg" alt="" class="hiddenImg">
     <div class="userInfo">
       <img :src="headImgUrl" alt="">
       <div>
         <h5>{{nickName}}</h5>
-        <p>已挖矿50天</p>
+        <!-- <p>已挖矿50天</p> -->
       </div>
 
     </div>
     <div class="accountBalance">
       <span>账户资金(BTC)</span>
       <h5>{{balance}}</h5>
-      <button>去提现</button>
+      <!-- <button>去提现</button> -->
     </div>
     <ul class="menu-container">
       <li class="menu-item afterIcon" @click="pushRoute('energy')">
@@ -53,7 +54,7 @@
           </svg>
         </span>
         <p>关注公众号</p>
-        <span>哈撒个</span>
+        <span></span>
       </li>
       <div style="flex: 1"></div>
       <p class="tips">客服电话：0571-62888888</p>
@@ -119,8 +120,8 @@ section[id='person-container'] {
   align-items: center;
   img {
     display: block;
-    width: 84px;
-    height: 84px;
+    width: 104px;
+    height: 104px;
     border-radius: 50%;
     margin-right: 20px;
     background: rgba(0, 0, 0, 0.3);
@@ -149,14 +150,15 @@ section[id='person-container'] {
 
 .accountBalance {
   height: 200px;
+  width: 690px;
   padding: 50px 40px 42px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   position: relative;
+  background-image: url('./account_bg.png');
   background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background: url('./account_bg.png');
+  background-size: 690px 200px;
   border-radius: 20px;
   span {
     font-family: PingFangSC-Regular;
@@ -383,6 +385,14 @@ section[id='person-container'] {
       }
     }
   }
+}
+.hiddenImg {
+ width: 75vw;
+  height: auto;
+  border-radius: 12px;
+  position: absolute;
+  right: -1000000px;
+  top: -1000000000px;
 }
 </style>
 

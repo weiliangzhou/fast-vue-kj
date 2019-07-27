@@ -19,7 +19,7 @@
           </svg>
           <span>首页</span>
         </router-link>
-        <router-link to="/home/personal" replace>
+        <router-link to="/home/personal#123" replace>
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#iconmy"></use>
           </svg>
@@ -33,7 +33,7 @@
           </svg>
           <span>首页</span>
         </router-link>
-        <router-link to="/home/personal" replace>
+        <router-link to="/home/personal#123" replace>
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#iconmy1"></use>
           </svg>

@@ -1,11 +1,18 @@
 <!--  -->
 <template>
+<div :style="{width: this.radius*2, height: this.radius*2}" @click="onTouchstart">
   <canvas ref="gauge">
     <slot />
   </canvas>
+</div>
+
 </template>
 
 <script>
+import red from './red.png'
+import blue from './blue.png'
+import green from './green.png'
+import { resolveImg } from "@/global"
 export default {
   name: 'gauge',
   data() {
@@ -15,18 +22,25 @@ export default {
       range: 0.4,
       nowdata: 0,
       sp: 0, // 周期偏移量
-      data: 20 // 数据量
+      imgs: []
     }
   },
   props: {
           radius: {
             type: Number,
             default: 80
-          }
+          },
+          timeDown: {
+            type: Number,
+            default: 0
+          },
   },
   components: {},
-
+  
   computed: {
+    data() {
+      return this.timeDown/(24*36)
+    },
     cR() {
       return this.radius - this.radius * 0.08 * this.lineWidth
     }
@@ -63,7 +77,11 @@ export default {
     ctx.strokeStyle = '#1c86d1'
     ctx.moveTo(cStartPoint[0], cStartPoint[1])
     // 开始渲染
-    this.updateCanvas()
+    Promise.all([resolveImg(red), resolveImg(blue), resolveImg(green)]).then(res=>{
+      this.imgs = res;
+      this.updateCanvas()
+    })
+
   },
   beforeDestroy() {
     window.cancelAnimationFrame(this.animation)
@@ -97,6 +115,9 @@ export default {
       ctx.fillStyle = '#fbec99'
       ctx.fill()
       ctx.restore()
+    },
+    onTouchstart() {
+      alert(99)
     },
     drawText() {
       var ctx = this.ctx
@@ -165,6 +186,7 @@ export default {
     // 裁剪中间水圈
     clipCircle() {
       var ctx = this.ctx
+      var timeDown = this.timeDown
       ctx.beginPath()
       ctx.arc(
         this.radius,
@@ -175,6 +197,18 @@ export default {
         false
       )
       ctx.clip()
+  let [red, blue, green] = this.imgs
+  let img = null;
+  img
+  if(timeDown>3600*12) {
+    img = green;
+  } else if (timeDown > 3600) {
+    img = blue;
+  } else {
+    img = red;
+  }
+  let lineWidth = this.radius * 0.08
+      ctx.drawImage(img, lineWidth ,lineWidth,(this.radius - lineWidth )*2, (this.radius - lineWidth)*2);
     },
     updateCanvas() {
       var ctx = this.ctx
@@ -225,7 +259,7 @@ export default {
       // 开始水波动画
       this.drawSine()
       // 写字
-      this.drawText()
+      //this.drawText()
       this.animation = requestAnimationFrame(this.updateCanvas)
       // setTimeout(()=>window.cancelAnimationFrame(id), 3000)
     }

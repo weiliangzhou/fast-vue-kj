@@ -4,7 +4,7 @@
       <h5 class="ellipsis_1">{{item.taskDesc}}</h5>
       <p>{{item.updateTime}}</p>
     </div>
-    <button><span>+{{item.energyValue}}</span></button>
+    <button><span>+{{item.energyValue}} 电力</span></button>
   </li>
 </template>
 

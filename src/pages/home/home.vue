@@ -3,8 +3,8 @@
     <div class="top-container">
       <div class="part1">
         <h6>实时挖矿收益</h6>
-        <p>0.00000103</p>
-        <button><span>提币</span></button>
+        <p>{{btcInfo}}</p>
+        <!-- <button><span>提币</span></button> -->
       </div>
       <div class="part2">
         <div class="text-container">
@@ -14,29 +14,30 @@
           </div>
         </div>
         <ul class="boll-container">
-          <li class="qiandao-pos">
-            <p><span>+3</span></p><span>签到打卡</span>
-          </li>
-          <li class="fenxiang-pos">
-            <p><span>+3</span></p><span>分享活动</span>
-          </li>
-          <li class="yaoqing-pos">
-            <p><span>+3</span></p><span>新用户奖励</span>
+          <li v-for="item in bollTasks" :class="['common_animate',item.pos]" :key="item.id" @click="completeTask(item.id)">
+            <p><span :style="{fontSize: item.type==3?'12px': '16px'}">{{item.type==3?item.title:"+"+item.hours}}</span></p><span>{{item.type==3?"":item.title}}</span>
           </li>
         </ul>
       </div>
       <div style="flex: 1"></div>
       <div class="part3">
-        <gauge :radius="60"></gauge>
+        <div class="label-container">
+          <span>{{TimeFormat}}</span>
+          <p>长按充电</p>
+        </div>
+        <gauge @tochstart.prevent="onTouchstart" @touchend.native.prevent="onTouchEnd" :timeDown="currentEnergyExpireSecond" :radius="60"></gauge>
       </div>
     </div>
     <div class="task-container">
       <ul>
         <h5>
-          <p>提升算力，挖矿速度飙升</p><span>500GH/S</span>
+          <p>提升算力，挖矿速度飙升</p><span>{{currentPower}}GH/S</span>
         </h5>
         <li @click="showShare">
-          <img :src="iconList[0]" alt="">
+          <img
+            :src="iconList[0]"
+            alt=""
+          >
           <div>
             <h6>提升算力</h6>
             <p>邀请一位好友注册赠送<br>100GH/S</p>
@@ -47,12 +48,19 @@
 
       <ul>
         <h5>
-          <p>完成任务赢电力</p><span>0GH</span>
+          <p>完成任务赢电力</p><span></span>
         </h5>
-        <li v-for="(item, index) in myTaskInfoList" :key="index" :style="{
+        <li
+          v-for="(item, index) in myTaskInfoList"
+          :key="index"
+          :style="{
             background: item.color
-          }">
-          <img :src="item.icoUrl" alt="">
+          }"
+        >
+          <img
+            :src="item.icoUrl"
+            alt=""
+          >
           <div>
             <h6>{{item.title}}</h6>
             <p>{{item.desc}}</p>
@@ -63,7 +71,10 @@
         </li>
       </ul>
       <div class="tips">
-        <h4><img src="./activity_title.png" alt=""></h4>
+        <h4><img
+            src="./activity_title.png"
+            alt=""
+          ></h4>
         <div>
           <h5><span>活动描述</span></h5>
           <p>1. 挖矿分为算力和电力两部分组成
@@ -78,125 +89,122 @@
   </section>
 </template>
 <script>
-import { Toast, setUserInfo } from '@/global' // getObject copyTextToClipboard
-import { energyInfo, homepageInfo, completeTask } from '@/api'
+import { Toast, setUserInfo } from "@/global"; // getObject copyTextToClipboard
+import { energyInfo, homepageInfo, completeTask } from "@/api";
 // import { menus } from "@/conf/static";
-import fenxiang from './icon_fenxiang.png'
-import qiandao from './icon_qiandao.png'
-import yaoqing from './icon_yaoqing.png'
-import zhuce from './icon_zhuce.png'
-import xiazai from './icon_xiazai.png'
+import fenxiang from "./icon_fenxiang.png";
+import qiandao from "./icon_qiandao.png";
+import yaoqing from "./icon_yaoqing.png";
+import zhuce from "./icon_zhuce.png";
+import xiazai from "./icon_xiazai.png";
 
-import { MessageBox } from 'mint-ui'
+import { MessageBox } from "mint-ui";
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapMutations } = createNamespacedHelpers('salesData/agent')
+import { createNamespacedHelpers } from "vuex";
+import { clearInterval } from "timers";
+const { mapActions, mapMutations } = createNamespacedHelpers("salesData/agent");
 export default {
   data() {
     return {
       iconList: [yaoqing, zhuce, xiazai, qiandao, fenxiang],
       btcInfo: 0.0000375303,
-      btcInfoDesc: '0.0000375303',
+      btcInfoDesc: "0.0000375303",
       currentEnergyExpireSecond: 0,
       currentPower: 700,
       currentSpeedRate: 1.6e-10,
-      currentSpeedRateDesc: '0.00000000016',
-      myTaskInfoList: [
-        // {
-        //   label: '注册赢电力',
-        //   desc: '新用户一次性赠送120\n小时电力',
-        //   buttonText: '立即领取',
-        //   color: '#FFB400'
-        // },
-        // {
-        //   label: '下载赢电力',
-        //   desc: '下载APP，注册领取\n300USDT',
-        //   buttonText: '立即领取',
-        //   color: '#00C0AC'
-        // },
-        // {
-        //   label: '每日签到',
-        //   desc: '签到打卡领取电力',
-        //   buttonText: '立即领取',
-        //   color: '#FF461A'
-        // },
-        //      [
-        // ]
-        // {
-        //   label: '每日分享',
-        //   desc: '每日可分享一次加电力',
-        //   buttonText: '立即分享',
-        //   color: '#6868E7'
-        // }
-      ]
-    }
+      currentSpeedRateDesc: "0.00000000016",
+      myTaskInfoList: []
+    };
   },
-  computed: {},
+  computed: {
+    bollTasks() {
+      return this.myTaskInfoList.filter(item=>item.type==3 || !item.complete)
+    },
+    TimeFormat() {
+      let s = this.currentEnergyExpireSecond
+  var hour = Math.floor(s / 3600);
+  var minute = Math.floor(s / 60) - hour * 60;
+  var second = s - hour*3600 - minute*60
+  return [
+    hour,minute,second
+  ].join(':') 
+}
+  },
 
   mounted() {
-    energyInfo().then(res => {})
+    energyInfo().then(res => {});
     homepageInfo().then(({ myTaskInfoList, ...others }) => {
-      let colors = ['#FFB400', '#FF461A', '#00C0AC', '#6868E7']
-      myTaskInfoList = myTaskInfoList.map(item => {
-        item['color'] = colors[item.id - 1]
-        return item
-      })
-      Object.assign(this, { myTaskInfoList, ...others })
-    })
+      let colors = ["#00C0AC", "#FF461A", "#FFB400", "#6868E7"];
+      let pos=['fenxiang-pos', 'yaoqing-pos', 'qiandao-pos', 'renwu-pos']
+      myTaskInfoList = myTaskInfoList.map((item, index) => {
+        item["color"] = colors[index % 4];
+        item.pos=pos[index % 4]
+        return item;
+      });
+      Object.assign(this, { myTaskInfoList, ...others, currentEnergyExpireSecond: 3601 });
+      this.startTimeDown()
+    });
   },
   methods: {
+    test() {
+      alert(88)
+    },
     completeTask(taskId) {
-      let currentTask = this.myTaskInfoList.findIndex(item=>item.id==taskId)
-      if(currentTask!==-1&&this.myTaskInfoList[currentTask].complete == false) {
-         completeTask(taskId).then(res => {
-           this.myTaskInfoList[currentTask].complete = true;
-        this.myTaskInfoList[currentTask].btnName = "已完成"
-      })
+      let currentTask = this.myTaskInfoList.findIndex(
+        item => item.id == taskId
+      );
+      if(currentTask!==-1&&this.myTaskInfoList[currentTask].hrefUrl) {
+        location.href = this.myTaskInfoList[currentTask].hrefUrl
+      }else if (
+        currentTask !== -1 && 
+        this.myTaskInfoList[currentTask].complete == false
+      ) {
+        completeTask(taskId).then(res => {
+          this.myTaskInfoList[currentTask].complete = true;
+          this.myTaskInfoList[currentTask].btnName = "已完成";
+        });
+      }
+    },
+    startTimeDown() {
+      if (!this.btcInfoTime) {
+        this.btcInfoTime = setInterval(() => {
+          if (this.currentEnergyExpireSecond) {
+            let current = new Number(Number(this.btcInfo)+Number(this.currentSpeedRate))
+            this.btcInfo = current.toFixed(10);
+          } else {
+            this.stopTimeDown();
+          }
+        }, 1000);
+      }
+    },
+    stopTimeDown() {
+      clearInterval(this.btcInfoTime);
+      this.btcInfoTime = null;
+    },
+    showShare() {
+      this.$root.$children[0].setShareContext(true);
+    },
+    onTouchStart(e) {
+      e.preventDefault()
+      if (!this.touchStartTime) {
+         this.touchStartTime = setInterval(() => {
+        this.currentEnergyExpireSecond+=60;
+      }, 20);
       }
      
     },
-    showShare() {
-      this.$root.$children[0].setShareContext(true)
-    },
-    onTouchStart() {
-      e.preventDefault()
-      this.state.int = setInterval(() => {
-        this.showLeftTime(60)
-      }, 20)
-    },
     // 长按松开事件
     onTouchEnd() {
-      const { currentEnergyExpireSecond, replaceEnergy } = this.state
-      /**
-       * 得到加了多少时间，如果增加时间大于0小时，就调用充电接口
-       *  */
-      let hours = Number(currentEnergyExpireSecond) - Number(replaceEnergy)
-      if (hours != 0) {
-        let result = hours / 3600
-        let splitLen =
-          result.toString().split('.')[1] &&
-          result.toString().split('.')[1].length
-        if (splitLen) {
-          let res = result.toFixed()
-          this.chargeData(res + 1)
-        } else {
-          let res2 = result.toFixed()
-          this.chargeData(res2)
-        }
-      }
-      // 松开后时间不是0就开始倒计时，并清除时间加定时器
-      if (this.state.currentEnergyExpireSecond != 0) {
-        this.countDown(1)
-        clearInterval(this.state.int)
-      }
+       clearInterval(this.touchStartTime)
+       this.touchStartTime = null;
     }
   },
   activated() {},
   beforeRouteLeave(to, from, next) {
-    this.stickyIsShow = false
-    next()
+    this.stickyIsShow = false;
+    next();
   }
-}
+};
 </script>
 
 <style lang='less' scoped>
@@ -300,6 +308,36 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    .label-container {
+      pointer-events: none; //默认为auto
+      position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        span {
+          font-family: PingFangSC-Medium;
+font-size: 32px;
+color: #FFFFFF;
+letter-spacing: 0.44px;
+text-align: center;
+height: 45px;
+line-height: 45px;
+        }
+        p {
+          height: 33px;
+          line-height: 33px;
+          font-family: PingFangSC-Medium;
+font-size: 24px;
+color: rgba(0,0,0,0.60);
+letter-spacing: 0;
+text-align: center;
+        }
+    }
   }
   .part2 {
     display: flex;
@@ -418,6 +456,15 @@ export default {
         bottom: 121px;
         p {
           background: url('./icon_fudongB.png');
+          background-repeat: no-repeat;
+          background-size: 104px 104px;
+        }
+      }
+      .renwu-pos {
+        right: 93px;
+        bottom: 41px;
+        p {
+          background: url('./icon3.png');
           background-repeat: no-repeat;
           background-size: 104px 104px;
         }
@@ -563,4 +610,21 @@ export default {
     }
   }
 }
+
+@keyframes buzz-out {
+  0%, 100%, 20%, 50%, 80% { transform: translate3d(0, 0, 0);}
+  40%, 43% { transform: translate3d(0,-30px,0); }
+  70% { transform: translate3d(0,-15px,0); }
+  90% { transform: translate3d(0,-4px,0); }
+}
+.common_animate { 
+  animation-duration:1s;
+  animation-fill-mode: both;
+  animation-name: buzz-out;
+  animation-iteration-count: infinite;
+  transform-origin: center bottom; 
+  cursor: pointer;
+}
+
+
 </style>

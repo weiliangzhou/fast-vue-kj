@@ -14,9 +14,9 @@
       </ul>
       <no-more v-show="currentList.length === 0"></no-more>
     </div>
-    <div class="bottom-container" v-if="type !== 'energy'">
-      <button v-if="type == 'acalculationPower'" @click="pushRoute('withdraw-record')"><span>提升算力</span></button>
-      <button v-if="type == 'extract'" @click="pushRoute('withdraw-record')"><span>提现</span></button>
+    <div class="bottom-container" v-if="type == 'acalculationPower'">
+      <button v-if="type == 'acalculationPower'" @click="showShare"><span>提升算力</span></button>
+      <!-- <button v-if="type == 'extract'" @click="pushRoute('withdraw-record')"><span>提现</span></button> -->
     </div>
   </section>
 </template>
@@ -94,26 +94,8 @@ export default {
   },
 
   methods: {
-    ApplicationWithdrawal() {
-      if (this.selected.length) {
-        addUserDraw(this.selected)
-          .then(({ id }) => {
-            this.$router.push({
-              name: 'do-withdraw',
-              query: { withdrawId: id }
-            })
-          })
-          .catch(err => {
-            if ([3517, 3544].includes(err.errno)) {
-              this.bindBankIsShow = true
-            } else {
-              Toast(err)
-            }
-          })
-      }
-    },
-    goEarningsDetail(date) {
-      this.$router.push({ name: 'product-earnings', query: { date } })
+     showShare() {
+      this.$root.$children[0].setShareContext(true);
     },
     // product-earnings
     loadMore() {
