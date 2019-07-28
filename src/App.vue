@@ -13,13 +13,13 @@
         <h5>邀请好友</h5>
         <p>每邀请1位好友注册赠送100GH/S</p>
         <ul>
-          <li><svg :style="{width: '40px', height: '40px'}" class="icon icon-svg" aria-hidden="true">
+          <li @click="showShareTips"><svg :style="{width: '40px', height: '40px'}" class="icon icon-svg" aria-hidden="true">
               <use xlink:href="#iconWeChat"></use>
             </svg><span>微信</span></li>
-          <li><svg :style="{width: '40px', height: '40px'}" class="icon icon-svg" aria-hidden="true">
+          <li @click="showShareTips"><svg :style="{width: '40px', height: '40px'}" class="icon icon-svg" aria-hidden="true">
               <use xlink:href="#iconpyq"></use>
             </svg><span>朋友圈</span></li>
-          <li @click="copyShareUrl">
+          <li @click="copyShareUrl($event,copyContent)" id="tag-copy" :data-clipboard-text="copyContent">
             <svg class="icon icon-svg" aria-hidden="true" :style="{cursor: 'pointer', width: '40px', height: '40px'}" data-clipboard-text='http://kj.yizhidao9.com'>
               <use xlink:href="#iconlink"></use>
             </svg>
@@ -28,24 +28,33 @@
         </ul>
         <button @click="setShareContext(false)"><span>取消</span></button>
       </div>
-
     </section>
+
+      <div id="share" v-if="shareTipsImgIsShow" @click="shareTipsImgIsShow = false">
+    <img :src="shareImg" alt="">
+  </div>
+
   </div>
 </template>
 
 <script>
+
+import Clipboard from 'clipboard';
+import shareImg from "./shareImg.png"
 import { copyTextToClipboard, getUserInfo } from "@/global"
 export default {
   data() {
     return {
-      shareContextIsShow: false
+      shareContextIsShow: false,
+      shareTipsImgIsShow: false,
+      shareImg: shareImg,
+      copyContent: ''
     }
   },
   name: 'App',
   methods: {
         stopEvent(e) {
         e = e || window.event;
-        console.log(33)
         e.preventDefault? e.preventDefault() : e.returnValue = false
         if (e.stopPropagation) {
             e.stopPropagation();
@@ -54,14 +63,37 @@ export default {
             e.cancelBubble = true;
         }
     },
+   showShareTips() {
+     this.shareContextIsShow = false;
+     this.shareTipsImgIsShow = true;
+   },
     setShareContext(flag = false) {
       this.shareContextIsShow = flag;
     },
-    copyShareUrl() {
-      let user = getUserInfo()
-      let localUrl = window.location.origin+"/home/index?referUid=" + user.id
-      copyTextToClipboard(localUrl)
+    copyShareUrl(e, text) {
+
+       const clipboard = new Clipboard(e.currentTarget, { text: () => text })
+      clipboard.on('success', e => {
+        console.log({ type: 'success', message: '复制成功' })
+        // 释放内存
+        clipboard.off('error')
+        clipboard.off('success')
+        clipboard.destroy()
+      })
+      clipboard.on('error', e => {
+        // 不支持复制
+       console.log({ type: 'waning', message: '该浏览器不支持自动复制' })
+        // 释放内存
+        clipboard.off('error')
+        clipboard.off('success')
+        clipboard.destroy()
+      })
+      clipboard.onClick(e)
     }
+  },
+  mounted() {
+          let user = getUserInfo()
+      this.copyContent = window.location.origin+"/home/index?referUid=" + user.id
   },
   computed: {}
 }
@@ -153,6 +185,20 @@ export default {
     }
   }
 }
+
+#share {
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  img {
+    width: 80%;
+    display: block;
+    margin: 40px auto 0;
+  }
+}
 </style>
 
 
@@ -160,10 +206,10 @@ export default {
 html {
   min-height: 100%;
   background: #fff;
-  -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
+  // -webkit-user-select:none;
+  //   -moz-user-select:none;
+  //   -ms-user-select:none;
+  //   user-select:none;
 }
 * {
   margin: 0;

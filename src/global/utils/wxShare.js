@@ -4,6 +4,7 @@ import config from "@/conf/config";
 import { getWXConfig } from "@/api";
 import { isWX, isIos } from "./tools";
 import { getUserInfo } from "./localUser";
+import shareImg from "@/img/pic_suoluotu.jpg";
 /**
  *
  * @param {title} shareData 分享内容的标题
@@ -18,14 +19,15 @@ const wxShare = param => {
   let user = getUserInfo();
   let referUid = user.id;
   let {
-    title = "sdfsf",
-    desc = "dd",
+    title = "免费真实挖矿",
+    desc = "真实免费获取BTC，最高可获得0.1BTC",
     link = `${window.location.origin}/home?referUid=${referUid}`,
     type = "link",
-    imgUrl = "https://img.mall.xc2018.com.cn/mall/upload/20190513/140756_99_gxee.png",
+    imgUrl = shareImg,
     success = () => {},
     cancel = () => {}
   } = param || {};
+  console.log(shareImg);
   let shareData = {
     title,
     desc,
@@ -188,6 +190,7 @@ export const shareMixin = {
       } // 对于指定的页面去取异步分享数据来替换默认的异步
       Promise.all([shareData, getWXConfigPromise()]).then(
         ([shareRes, shareIsShow]) => {
+          debugger;
           wxShare({ ...shareRes, link });
         }
       );

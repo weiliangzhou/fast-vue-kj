@@ -77,11 +77,6 @@ export default [
         path: "index",
         name: "home",
         meta: {
-          shareInfo: {
-            title: "测试的分享标题",
-            desc: "分销描述，sb二师兄",
-            sharePath: "/"
-          },
           title: "首页"
         },
         component: () => import("@/pages/home/home")

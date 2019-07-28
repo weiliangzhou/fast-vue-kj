@@ -15,17 +15,24 @@
         </div>
         <ul class="boll-container">
           <li v-for="item in bollTasks" :class="['common_animate',item.pos]" :key="item.id" @click="completeTask(item.id)">
-            <p><span :style="{fontSize: item.type==3?'12px': '16px'}">{{item.type==3?item.title:"+"+item.hours}}</span></p><span>{{item.type==3?"":item.title}}</span>
+             <!-- <p><span :style="{fontSize: item.type==3?'12px': '16px'}">{{item.type==3?item.title:"+"+item.hours}}</span></p><span>{{item.type==3?"":item.title}}</span> -->
+            <p><span>{{item.type==3?'':"+"+item.hours}}</span></p><span>{{item.title}}</span>
           </li>
         </ul>
       </div>
       <div style="flex: 1"></div>
       <div class="part3">
         <div class="label-container">
-          <span>{{TimeFormat}}</span>
+          <div>
+            <span>{{TimeFormatHour}}</span>
+            <span>:</span>
+            <span>{{TimeFormatMinute}}</span>
+            <span>:</span>
+            <span>{{TimeFormatSecond}}</span>
+            </div>
           <p>长按充电</p>
         </div>
-        <gauge @tochstart.prevent="onTouchstart" @touchend.native.prevent="onTouchEnd" :timeDown="currentEnergyExpireSecond" :radius="60"></gauge>
+        <gauge @touchstart.native.prevent="onTouchStart" @touchend.native.prevent="onTouchEnd" :timeDown="currentEnergyExpireSecond" :radius="60"></gauge>
       </div>
     </div>
     <div class="task-container">
@@ -90,7 +97,7 @@
 </template>
 <script>
 import { Toast, setUserInfo } from "@/global"; // getObject copyTextToClipboard
-import { energyInfo, homepageInfo, completeTask } from "@/api";
+import { energyInfo, homepageInfo, completeTask, energyConsume } from "@/api";
 // import { menus } from "@/conf/static";
 import fenxiang from "./icon_fenxiang.png";
 import qiandao from "./icon_qiandao.png";
@@ -101,18 +108,17 @@ import xiazai from "./icon_xiazai.png";
 import { MessageBox } from "mint-ui";
 
 import { createNamespacedHelpers } from "vuex";
-import { clearInterval } from "timers";
 const { mapActions, mapMutations } = createNamespacedHelpers("salesData/agent");
 export default {
   data() {
     return {
       iconList: [yaoqing, zhuce, xiazai, qiandao, fenxiang],
-      btcInfo: 0.0000375303,
-      btcInfoDesc: "0.0000375303",
+      btcInfo: 0,
+      btcInfoDesc: "0",
       currentEnergyExpireSecond: 0,
-      currentPower: 700,
-      currentSpeedRate: 1.6e-10,
-      currentSpeedRateDesc: "0.00000000016",
+      currentPower: 0,
+      currentSpeedRate: 0,
+      currentSpeedRateDesc: "0",
       myTaskInfoList: []
     };
   },
@@ -120,34 +126,82 @@ export default {
     bollTasks() {
       return this.myTaskInfoList.filter(item=>item.type==3 || !item.complete)
     },
-    TimeFormat() {
+    TimeFormatHour() {
+      let s = this.currentEnergyExpireSecond
+  var hour = Math.floor(s / 3600);
+  return hour
+  },
+     TimeFormatMinute() {
       let s = this.currentEnergyExpireSecond
   var hour = Math.floor(s / 3600);
   var minute = Math.floor(s / 60) - hour * 60;
-  var second = s - hour*3600 - minute*60
-  return [
-    hour,minute,second
-  ].join(':') 
-}
+  return minute > 9 ? minute : "0"+minute
   },
-
+     TimeFormatSecond() {
+      let s = this.currentEnergyExpireSecond
+  var second = s % 60
+  return second > 9 ? second : "0"+second
+  }
+},
   mounted() {
-    energyInfo().then(res => {});
     homepageInfo().then(({ myTaskInfoList, ...others }) => {
       let colors = ["#00C0AC", "#FF461A", "#FFB400", "#6868E7"];
       let pos=['fenxiang-pos', 'yaoqing-pos', 'qiandao-pos', 'renwu-pos']
       myTaskInfoList = myTaskInfoList.map((item, index) => {
         item["color"] = colors[index % 4];
-        item.pos=pos[index % 4]
+        item.pos=pos[index % 4] + " " + 'animate'+(parseInt(Math.random()*10)%8)
         return item;
       });
-      Object.assign(this, { myTaskInfoList, ...others, currentEnergyExpireSecond: 3601 });
+      Object.assign(this, { myTaskInfoList, ...others });
       this.startTimeDown()
     });
   },
   methods: {
-    test() {
-      alert(88)
+    onTouchStart() {
+      this.increaseLastUpdate = 0
+      if (!this.touchStartTime) {
+        this.stopTimeDown()
+         this.touchStartTime = setInterval(() => {
+           let increase = (30+parseInt(Math.random()*10))
+           this.increaseLastUpdate += increase
+           if(this.increaseLastUpdate>=3600) {
+             this.increaseLastUpdate-=3600
+             energyConsume(1).then(res=> {
+             }).catch(err=> {
+               Toast(err)
+               this.increaseLastUpdate = 0;
+               this.clearTouchTask()
+             }).then(()=> {
+                 energyInfo().then(res => {
+                this.currentEnergyExpireSecond = res || 0
+              });
+             })
+           }
+        this.currentEnergyExpireSecond+=increase;
+      }, 20);
+      }
+    },
+    clearTouchTask() {
+       clearInterval(this.touchStartTime)
+       this.touchStartTime = null;
+       this.startTimeDown()
+    },
+    // 长按松开事件
+    onTouchEnd() {
+      this.clearTouchTask()
+      if(this.increaseLastUpdate%3600) {
+        this.increaseLastUpdate = 0;
+         energyConsume(1).then(res=> {
+
+             }).catch(err=> {
+               Toast(err)
+               this.clearTouchTask()
+             }).then(res=> {
+                energyInfo().then(res => {
+                this.currentEnergyExpireSecond = res || 0
+              });
+             })
+      }
     },
     completeTask(taskId) {
       let currentTask = this.myTaskInfoList.findIndex(
@@ -166,11 +220,12 @@ export default {
       }
     },
     startTimeDown() {
-      if (!this.btcInfoTime) {
+      if (!this.btcInfoTime&&this.currentEnergyExpireSecond>0) {
         this.btcInfoTime = setInterval(() => {
-          if (this.currentEnergyExpireSecond) {
+          if (this.currentEnergyExpireSecond>0) {
             let current = new Number(Number(this.btcInfo)+Number(this.currentSpeedRate))
             this.btcInfo = current.toFixed(10);
+            this.currentEnergyExpireSecond--
           } else {
             this.stopTimeDown();
           }
@@ -184,20 +239,6 @@ export default {
     showShare() {
       this.$root.$children[0].setShareContext(true);
     },
-    onTouchStart(e) {
-      e.preventDefault()
-      if (!this.touchStartTime) {
-         this.touchStartTime = setInterval(() => {
-        this.currentEnergyExpireSecond+=60;
-      }, 20);
-      }
-     
-    },
-    // 长按松开事件
-    onTouchEnd() {
-       clearInterval(this.touchStartTime)
-       this.touchStartTime = null;
-    }
   },
   activated() {},
   beforeRouteLeave(to, from, next) {
@@ -309,6 +350,7 @@ export default {
     justify-content: center;
     align-items: center;
     position: relative;
+    margin-bottom: 28px;
     .label-container {
       pointer-events: none; //默认为auto
       position: absolute;
@@ -319,14 +361,17 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
-        span {
+        div {
+                  span {
           font-family: PingFangSC-Medium;
-font-size: 32px;
-color: #FFFFFF;
-letter-spacing: 0.44px;
-text-align: center;
-height: 45px;
-line-height: 45px;
+      font-size: 32px;
+      color: #FFFFFF;
+      letter-spacing: 0.44px;
+      text-align: center;
+      height: 45px;
+      line-height: 45px;
+      font-weight: 600;
+        }
         }
         p {
           height: 33px;
@@ -461,7 +506,7 @@ text-align: center;
         }
       }
       .renwu-pos {
-        right: 93px;
+        right: 53px;
         bottom: 41px;
         p {
           background: url('./icon3.png');
@@ -562,6 +607,7 @@ text-align: center;
           letter-spacing: 0;
           height: 30px;
           line-height: 30px;
+          font-weight: 600;
         }
       }
     }
@@ -572,7 +618,6 @@ text-align: center;
     padding: 56px 0 40px;
     img {
       width: 384px;
-      height: 48px;
       display: block;
       margin: auto;
     }
@@ -618,7 +663,6 @@ text-align: center;
   90% { transform: translate3d(0,-4px,0); }
 }
 .common_animate { 
-  animation-duration:1s;
   animation-fill-mode: both;
   animation-name: buzz-out;
   animation-iteration-count: infinite;
@@ -626,5 +670,38 @@ text-align: center;
   cursor: pointer;
 }
 
+.animate1 { 
+  animation-delay: 0.5s;
+   animation-duration:1s;
+}
 
+.animate2 { 
+  animation-delay: 0.3s;
+   animation-duration:0.9s;
+}
+
+.animate3 { 
+  animation-delay: 0.7s;
+   animation-duration:1.1s;
+}
+
+.animate4 { 
+  animation-delay: 0.9s;
+   animation-duration:1.3s;
+}
+
+.animate5 { 
+  animation-delay: 0.6s;
+   animation-duration:1.5s;
+}
+
+.animate6 { 
+  animation-delay: 0.2s;
+   animation-duration:1.1s;
+}
+
+.animate7 { 
+  animation-delay: 0.8s;
+   animation-duration:1.2s;
+}
 </style>

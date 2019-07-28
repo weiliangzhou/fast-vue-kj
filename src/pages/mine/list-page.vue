@@ -12,7 +12,9 @@
       <ul v-show="currentList.length" v-infinite-scroll="loadMore" infinite-scroll-disabled="isLoading" :infinite-scroll-immediate-check="true" infinite-scroll-distance="10">
         <component class="bottom-border" v-for="item in currentList" :item="item" :key="item.id" v-bind:is="currentComponent"></component>
       </ul>
-      <no-more v-show="currentList.length === 0"></no-more>
+      <div v-show="currentList.length === 0" class="no-data" :style="`background-image:url(${noDataImg})`">
+
+      </div>
     </div>
     <div class="bottom-container" v-if="type == 'acalculationPower'">
       <button v-if="type == 'acalculationPower'" @click="showShare"><span>提升算力</span></button>
@@ -22,7 +24,9 @@
 </template>
 
 <script>
-
+import picMoney from '@/img/pic_money.png'
+import picPower from '@/img/pic_power.png'
+import picSuanli from '@/img/pic_suanli.png'
 import item1 from "./item1"
 import item2 from "./item2"
 import item3 from "./item3"
@@ -69,6 +73,14 @@ export default {
       'extract': "",
       'energy': "剩余电力(小时)",
       'acalculationPower': "当前算力"
+    }[type] || ''
+  },
+  noDataImg() {
+     let type = this.type
+    return {
+      'extract': picMoney,
+      'energy': picPower,
+      'acalculationPower': picSuanli
     }[type] || ''
   },
   currentComponent() {
@@ -278,5 +290,13 @@ height: 50px;
 line-height: 50px;
     }
   }
+}
+
+.no-data {
+  width: 446px;
+  height: 448px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin: auto;
 }
 </style>

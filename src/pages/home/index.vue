@@ -148,8 +148,8 @@ export default {
       line-height: 33px;
     }
     svg {
-      width: 44px;
-      height: 44px;
+      width: 40px; /* no */
+      height: 40px; /* no */
     }
   }
   .router-link-active {

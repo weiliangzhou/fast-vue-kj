@@ -4,7 +4,7 @@
       <h5 class="ellipsis_1">{{item.taskDesc}}</h5>
       <p>{{item.updateTime}}</p>
     </div>
-    <button><span>+{{item.energyValue}} 电力</span></button>
+    <button><span :style="`color: ${item.energyType ==1? '#20C472':'#F03E5A'}`">{{item.energyType ==1? "+": "-"}}{{item.energyValue}} 电力</span></button>
   </li>
 </template>
 

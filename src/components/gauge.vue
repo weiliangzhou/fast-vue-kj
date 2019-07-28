@@ -1,6 +1,6 @@
-<!--  -->
+<!--   @touchstart.prevent="onTouchstart" -->
 <template>
-<div :style="{width: this.radius*2, height: this.radius*2}" @click="onTouchstart">
+<div :style="{width: this.radius*2, height: this.radius*2}" ref="container">
   <canvas ref="gauge">
     <slot />
   </canvas>
@@ -81,7 +81,6 @@ export default {
       this.imgs = res;
       this.updateCanvas()
     })
-
   },
   beforeDestroy() {
     window.cancelAnimationFrame(this.animation)
@@ -115,9 +114,6 @@ export default {
       ctx.fillStyle = '#fbec99'
       ctx.fill()
       ctx.restore()
-    },
-    onTouchstart() {
-      alert(99)
     },
     drawText() {
       var ctx = this.ctx

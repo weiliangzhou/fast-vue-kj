@@ -1,7 +1,6 @@
 <!--  -->
 <template>
   <section id="person-container">
-     <img :src="subscribeImg" alt="" class="hiddenImg">
     <div class="userInfo">
       <img :src="headImgUrl" alt="">
       <div>
@@ -76,7 +75,7 @@
 
 <script>
 import { getCurrentUserInfo } from '@/api'
-import { Toast, getUserInfo } from '@/global' // resolveTimeout, rejectTimeout
+import { Toast, getUserInfo, isWX, isIos } from '@/global' // resolveTimeout, rejectTimeout
 import subscribeImg from './QRcode.png'
 export default {
   data() {
@@ -94,12 +93,24 @@ export default {
     let userInfo = getUserInfo()
     let { headImgUrl, nickName } = userInfo
     Object.assign(this, { headImgUrl, nickName })
-    getCurrentUserInfo().then(res=> {
+    getCurrentUserInfo().then(res => {
       this.balance = res || 0
     })
   },
-  methods: {
+  methods: {},
+  beforeRouteEnter(to, from, next) {
+    if (isWX && isIos && !sessionStorage.mineRefreshed) {
+      sessionStorage.mineRefreshed = '1'
+      window.location.href = window.origin + to.fullPath
+    } else {
+      next()
+    }
   },
+
+  beforeRouteLeave(to, from, next) {
+    sessionStorage.mineRefreshed = ''
+    next()
+  }
 }
 </script>
 <style lang='less' scoped>
@@ -192,9 +203,9 @@ section[id='person-container'] {
   display: flex;
   align-items: center;
   padding: 30px 0;
-&>span:first-of-type {
-  margin-right: 16px;
-}
+  & > span:first-of-type {
+    margin-right: 16px;
+  }
   p {
     font-family: PingFangSC-Regular;
     font-size: 32px;
@@ -203,7 +214,7 @@ section[id='person-container'] {
     height: 44px;
     line-height: 44px;
   }
-  &>span:last-of-type {
+  & > span:last-of-type {
     flex: 1;
     font-family: PingFangSC-Regular;
     font-size: 28px;
@@ -386,13 +397,4 @@ section[id='person-container'] {
     }
   }
 }
-.hiddenImg {
- width: 75vw;
-  height: auto;
-  border-radius: 12px;
-  position: absolute;
-  right: -1000000px;
-  top: -1000000000px;
-}
 </style>
-

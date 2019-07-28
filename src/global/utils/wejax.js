@@ -19,7 +19,7 @@ service.interceptors.request.use(
     token &&
       token !== "undefined" &&
       !/^https?:\/\//.test(config.url) &&
-      (config.headers["Authorization"] = "4d13fbc5df4c4e149b4c6cdead106604");
+      (config.headers["Authorization"] = "" + token);
     if (method == "post") {
       type !== "json" && (config.transformRequest = [transform]);
       let typesObj = {
@@ -33,13 +33,13 @@ service.interceptors.request.use(
     }
     return config;
   },
-  error => Promise.reject(new MyError(error.message, 4, error.errno))
+  error => Promise.reject(new MyError(error.message, 4, error.msg))
 );
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    const { errno, errmsg, data } = response.data;
-    if ([101, 403].includes(errno)) {
+    const { code: errno, msg: errmsg, data } = response.data;
+    if ([101, 403, -1].includes(errno)) {
       localStorage.clear();
       login();
       return new Promise(() => {});
