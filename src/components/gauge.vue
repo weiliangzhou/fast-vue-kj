@@ -90,6 +90,7 @@ export default {
   methods: {
     drawSine() {
       var ctx = this.ctx
+      ctx.globalAlpha =0.6;
       var xoffset = this.radius * 0.08 * 0.8 * this.lineWidth // x 轴偏移量
       var axisLength = 2 * this.radius - xoffset * 2 // Sin 图形长度
       var unit = axisLength / 9 // 波浪宽
@@ -114,6 +115,7 @@ export default {
       ctx.fillStyle = '#fbec99'
       ctx.fill()
       ctx.restore()
+      ctx.globalAlpha =1;
     },
     drawText() {
       var ctx = this.ctx
@@ -214,7 +216,7 @@ export default {
       var nowdata = this.nowdata
       ctx.clearRect(0, 0, this.radius * 2, this.radius * 2)
       // 最外面淡黄色圈
-      this.drawCircle()
+      // this.drawCircle()
       // 灰色圆圈
       this.grayCircle()
       // 橘黄色进度圈

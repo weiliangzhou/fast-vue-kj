@@ -4,7 +4,6 @@ import config from "@/conf/config";
 import { getWXConfig } from "@/api";
 import { isWX, isIos } from "./tools";
 import { getUserInfo } from "./localUser";
-import shareImg from "@/img/pic_suoluotu.jpg";
 /**
  *
  * @param {title} shareData 分享内容的标题
@@ -23,11 +22,10 @@ const wxShare = param => {
     desc = "真实免费获取BTC，最高可获得0.1BTC",
     link = `${window.location.origin}/home?referUid=${referUid}`,
     type = "link",
-    imgUrl = shareImg,
+    imgUrl = 'https://img.mall.xc2018.com.cn/mall/upload/20190728/220256_62_0gpf.jpg',
     success = () => {},
     cancel = () => {}
   } = param || {};
-  console.log(shareImg);
   let shareData = {
     title,
     desc,

@@ -14,8 +14,13 @@
           </div>
         </div>
         <ul class="boll-container">
-          <li v-for="item in bollTasks" :class="['common_animate',item.pos]" :key="item.id" @click="completeTask(item.id)">
-             <!-- <p><span :style="{fontSize: item.type==3?'12px': '16px'}">{{item.type==3?item.title:"+"+item.hours}}</span></p><span>{{item.type==3?"":item.title}}</span> -->
+          <li
+            v-for="item in bollTasks"
+            :class="['common_animate',item.pos]"
+            :key="item.id"
+            @click="completeTask(item.id)"
+          >
+            <!-- <p><span :style="{fontSize: item.type==3?'12px': '16px'}">{{item.type==3?item.title:"+"+item.hours}}</span></p><span>{{item.type==3?"":item.title}}</span> -->
             <p><span>{{item.type==3?'':"+"+item.hours}}</span></p><span>{{item.title}}</span>
           </li>
         </ul>
@@ -29,10 +34,15 @@
             <span>{{TimeFormatMinute}}</span>
             <span>:</span>
             <span>{{TimeFormatSecond}}</span>
-            </div>
+          </div>
           <p>长按充电</p>
         </div>
-        <gauge @touchstart.native.prevent="onTouchStart" @touchend.native.prevent="onTouchEnd" :timeDown="currentEnergyExpireSecond" :radius="60"></gauge>
+        <gauge
+          @touchstart.native.prevent="onTouchStart"
+          @touchend.native.prevent="onTouchEnd"
+          :timeDown="currentEnergyExpireSecond"
+          :radius="60"
+        ></gauge>
       </div>
     </div>
     <div class="task-container">
@@ -124,108 +134,134 @@ export default {
   },
   computed: {
     bollTasks() {
-      return this.myTaskInfoList.filter(item=>item.type==3 || !item.complete)
+      return this.myTaskInfoList.filter(
+        item => item.type == 3 || !item.complete
+      );
     },
     TimeFormatHour() {
-      let s = this.currentEnergyExpireSecond
-  var hour = Math.floor(s / 3600);
-  return hour
+      let s = this.currentEnergyExpireSecond;
+      var hour = Math.floor(s / 3600);
+      return hour;
+    },
+    TimeFormatMinute() {
+      let s = this.currentEnergyExpireSecond;
+      var hour = Math.floor(s / 3600);
+      var minute = Math.floor(s / 60) - hour * 60;
+      return minute > 9 ? minute : "0" + minute;
+    },
+    TimeFormatSecond() {
+      let s = this.currentEnergyExpireSecond;
+      var second = s % 60;
+      return second > 9 ? second : "0" + second;
+    }
   },
-     TimeFormatMinute() {
-      let s = this.currentEnergyExpireSecond
-  var hour = Math.floor(s / 3600);
-  var minute = Math.floor(s / 60) - hour * 60;
-  return minute > 9 ? minute : "0"+minute
-  },
-     TimeFormatSecond() {
-      let s = this.currentEnergyExpireSecond
-  var second = s % 60
-  return second > 9 ? second : "0"+second
-  }
-},
   mounted() {
     homepageInfo().then(({ myTaskInfoList, ...others }) => {
       let colors = ["#00C0AC", "#FF461A", "#FFB400", "#6868E7"];
-      let pos=['fenxiang-pos', 'yaoqing-pos', 'qiandao-pos', 'renwu-pos']
+      let pos = ["fenxiang-pos", "yaoqing-pos", "qiandao-pos", "renwu-pos"];
       myTaskInfoList = myTaskInfoList.map((item, index) => {
         item["color"] = colors[index % 4];
-        item.pos=pos[index % 4] + " " + 'animate'+(parseInt(Math.random()*10)%8)
+        item.pos =
+          pos[index % 4] + " " + "animate" + (parseInt(Math.random() * 10) % 8);
         return item;
       });
       Object.assign(this, { myTaskInfoList, ...others });
-      this.startTimeDown()
+      this.startTimeDown();
     });
   },
   methods: {
+    showToast1(text) {
+      let container = document.createElement("section");
+      container.setAttribute("class", "toast1");
+      let span = document.createElement("span");
+      span.innerText = text;
+      let div = document.createElement("div");
+      div.appendChild(span);
+      container.appendChild(div);
+      document.body.appendChild(container);
+      setTimeout(() => {
+       // debugger;
+       document.body.removeChild(container);
+      }, 1500);
+    },
     onTouchStart() {
-      this.increaseLastUpdate = 0
+      this.increaseLastUpdate = 0;
       if (!this.touchStartTime) {
-        this.stopTimeDown()
-         this.touchStartTime = setInterval(() => {
-           let increase = (30+parseInt(Math.random()*10))
-           this.increaseLastUpdate += increase
-           if(this.increaseLastUpdate>=3600) {
-             this.increaseLastUpdate-=3600
-             energyConsume(1).then(res=> {
-             }).catch(err=> {
-               Toast(err)
-               this.increaseLastUpdate = 0;
-               this.clearTouchTask()
-             }).then(()=> {
-                 energyInfo().then(res => {
-                this.currentEnergyExpireSecond = res || 0
+        this.stopTimeDown();
+        this.touchStartTime = setInterval(() => {
+          let increase = 30 + parseInt(Math.random() * 10);
+          this.increaseLastUpdate += increase;
+          if (this.increaseLastUpdate >= 3600) {
+            this.increaseLastUpdate -= 3600;
+            energyConsume(1)
+              .then(res => {})
+              .catch(err => {
+                Toast(err);
+                this.increaseLastUpdate = 0;
+                this.clearTouchTask();
+              })
+              .then(() => {
+                energyInfo().then(res => {
+                  this.currentEnergyExpireSecond = res || 0;
+                });
               });
-             })
-           }
-        this.currentEnergyExpireSecond+=increase;
-      }, 20);
+          }
+          this.currentEnergyExpireSecond += increase;
+        }, 20);
       }
     },
     clearTouchTask() {
-       clearInterval(this.touchStartTime)
-       this.touchStartTime = null;
-       this.startTimeDown()
+      clearInterval(this.touchStartTime);
+      this.touchStartTime = null;
+      this.startTimeDown();
     },
     // 长按松开事件
     onTouchEnd() {
-      this.clearTouchTask()
-      if(this.increaseLastUpdate%3600) {
+      this.clearTouchTask();
+      if (this.increaseLastUpdate % 3600) {
         this.increaseLastUpdate = 0;
-         energyConsume(1).then(res=> {
-
-             }).catch(err=> {
-               Toast(err)
-               this.clearTouchTask()
-             }).then(res=> {
-                energyInfo().then(res => {
-                this.currentEnergyExpireSecond = res || 0
-              });
-             })
+        energyConsume(1)
+          .then(res => {})
+          .catch(err => {
+            Toast(err);
+            this.clearTouchTask();
+          })
+          .then(res => {
+            energyInfo().then(res => {
+              this.currentEnergyExpireSecond = res || 0;
+            });
+          });
       }
     },
     completeTask(taskId) {
       let currentTask = this.myTaskInfoList.findIndex(
         item => item.id == taskId
       );
-      if(currentTask!==-1&&this.myTaskInfoList[currentTask].hrefUrl) {
-        location.href = this.myTaskInfoList[currentTask].hrefUrl
-      }else if (
-        currentTask !== -1 && 
+      if (currentTask !== -1 && this.myTaskInfoList[currentTask].hrefUrl) {
+        location.href = this.myTaskInfoList[currentTask].hrefUrl;
+      } else if (
+        currentTask !== -1 &&
         this.myTaskInfoList[currentTask].complete == false
       ) {
         completeTask(taskId).then(res => {
           this.myTaskInfoList[currentTask].complete = true;
           this.myTaskInfoList[currentTask].btnName = "已完成";
+          if(this.myTaskInfoList[currentTask].hours) {
+            this.showToast1("电力+" + this.myTaskInfoList[currentTask].hours);
+          }
+          
         });
       }
     },
     startTimeDown() {
-      if (!this.btcInfoTime&&this.currentEnergyExpireSecond>0) {
+      if (!this.btcInfoTime && this.currentEnergyExpireSecond > 0) {
         this.btcInfoTime = setInterval(() => {
-          if (this.currentEnergyExpireSecond>0) {
-            let current = new Number(Number(this.btcInfo)+Number(this.currentSpeedRate))
+          if (this.currentEnergyExpireSecond > 0) {
+            let current = new Number(
+              Number(this.btcInfo) + Number(this.currentSpeedRate)
+            );
             this.btcInfo = current.toFixed(10);
-            this.currentEnergyExpireSecond--
+            this.currentEnergyExpireSecond--;
           } else {
             this.stopTimeDown();
           }
@@ -238,7 +274,7 @@ export default {
     },
     showShare() {
       this.$root.$children[0].setShareContext(true);
-    },
+    }
   },
   activated() {},
   beforeRouteLeave(to, from, next) {
@@ -275,7 +311,7 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  background: url('../../img/pic_ditu@2x.png');
+  background: url("../../img/pic_ditu@2x.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 
@@ -354,34 +390,34 @@ export default {
     .label-container {
       pointer-events: none; //默认为auto
       position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        div {
-                  span {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      div {
+        span {
           font-family: PingFangSC-Medium;
-      font-size: 32px;
-      color: #FFFFFF;
-      letter-spacing: 0.44px;
-      text-align: center;
-      height: 45px;
-      line-height: 45px;
-      font-weight: 600;
+          font-size: 32px;
+          color: #ffffff;
+          letter-spacing: 0.44px;
+          text-align: center;
+          height: 45px;
+          line-height: 45px;
+          font-weight: 600;
         }
-        }
-        p {
-          height: 33px;
-          line-height: 33px;
-          font-family: PingFangSC-Medium;
-font-size: 24px;
-color: rgba(0,0,0,0.60);
-letter-spacing: 0;
-text-align: center;
-        }
+      }
+      p {
+        height: 33px;
+        line-height: 33px;
+        font-family: PingFangSC-Medium;
+        font-size: 24px;
+        color: rgba(0, 0, 0, 0.6);
+        letter-spacing: 0;
+        text-align: center;
+      }
     }
   }
   .part2 {
@@ -418,7 +454,7 @@ text-align: center;
           right: -90px;
           width: 80px;
           height: 36px;
-          background: url('./dayBg.png');
+          background: url("./dayBg.png");
           background-repeat: no-repeat;
           background-size: 80px 36px;
         }
@@ -491,7 +527,7 @@ text-align: center;
         left: 46px;
         top: 5px;
         & > p {
-          background: url('./icon_fudongY.png');
+          background: url("./icon_fudongY.png");
           background-repeat: no-repeat;
           background-size: 104px 104px;
         }
@@ -500,7 +536,7 @@ text-align: center;
         right: 173px;
         bottom: 121px;
         p {
-          background: url('./icon_fudongB.png');
+          background: url("./icon_fudongB.png");
           background-repeat: no-repeat;
           background-size: 104px 104px;
         }
@@ -509,7 +545,7 @@ text-align: center;
         right: 53px;
         bottom: 41px;
         p {
-          background: url('./icon3.png');
+          background: url("./icon3.png");
           background-repeat: no-repeat;
           background-size: 104px 104px;
         }
@@ -518,7 +554,7 @@ text-align: center;
         top: 56px;
         right: 70px;
         p {
-          background: url('./icon_fudongC.png');
+          background: url("./icon_fudongC.png");
           background-repeat: no-repeat;
           background-size: 104px 104px;
         }
@@ -657,51 +693,99 @@ text-align: center;
 }
 
 @keyframes buzz-out {
-  0%, 100%, 20%, 50%, 80% { transform: translate3d(0, 0, 0);}
-  40%, 43% { transform: translate3d(0,-30px,0); }
-  70% { transform: translate3d(0,-15px,0); }
-  90% { transform: translate3d(0,-4px,0); }
+    0%,
+  100%,
+  20%,
+  50%,
+  80% {
+    transform: translate3d(0, 0, 0);
+  }
+    40%,
+  43% {
+    transform: translate3d(0, -30px, 0);
+  }
+    70% {
+    transform: translate3d(0, -15px, 0);
+  }
+    90% {
+    transform: translate3d(0, -4px, 0);
+  }
 }
-.common_animate { 
+.common_animate {
   animation-fill-mode: both;
   animation-name: buzz-out;
   animation-iteration-count: infinite;
-  transform-origin: center bottom; 
+  transform-origin: center bottom;
   cursor: pointer;
 }
 
-.animate1 { 
+.animate1 {
   animation-delay: 0.5s;
-   animation-duration:1s;
+  animation-duration: 1s;
 }
 
-.animate2 { 
+.animate2 {
   animation-delay: 0.3s;
-   animation-duration:0.9s;
+  animation-duration: 0.9s;
 }
 
-.animate3 { 
+.animate3 {
   animation-delay: 0.7s;
-   animation-duration:1.1s;
+  animation-duration: 1.1s;
 }
 
-.animate4 { 
+.animate4 {
   animation-delay: 0.9s;
-   animation-duration:1.3s;
+  animation-duration: 1.3s;
 }
 
-.animate5 { 
+.animate5 {
   animation-delay: 0.6s;
-   animation-duration:1.5s;
+  animation-duration: 1.5s;
 }
 
-.animate6 { 
+.animate6 {
   animation-delay: 0.2s;
-   animation-duration:1.1s;
+  animation-duration: 1.1s;
 }
 
-.animate7 { 
+.animate7 {
   animation-delay: 0.8s;
-   animation-duration:1.2s;
+  animation-duration: 1.2s;
 }
 </style>
+<style lang='less'>
+.toast1 {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  div {
+    width: 200px;
+    height: 190px;
+    border-radius: 20px;
+    background: url("./icon_toast1.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    span {
+      font-family: PingFangSC-Medium;
+      font-size: 28px;
+      color: #2CD781;
+      letter-spacing: 0;
+      text-align: justify;
+      height: 40px;
+      line-height: 40px;
+      margin-bottom: 28px;
+    }
+  }
+}
+</style>
+
