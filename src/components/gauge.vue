@@ -1,6 +1,6 @@
 <!--   @touchstart.prevent="onTouchstart" -->
 <template>
-<div :style="{width: this.radius*2, height: this.radius*2}" ref="container">
+<div :style="`width: ${this.radius*2}px; height: ${this.radius*2}px;background-image: url(${backgroundImg});`" ref="container">
   <canvas ref="gauge">
     <slot />
   </canvas>
@@ -17,7 +17,7 @@ export default {
   name: 'gauge',
   data() {
     return {
-      lineWidth: 2,
+      lineWidth: 0,
       nowrange: 0.4,
       range: 0.4,
       nowdata: 0,
@@ -43,6 +43,17 @@ export default {
     },
     cR() {
       return this.radius - this.radius * 0.08 * this.lineWidth
+    },
+    backgroundImg() {
+    var imgIndex = 0
+    if(this.timeDown>3600*12) {
+      imgIndex = 2;
+    } else if (this.timeDown > 3600) {
+      imgIndex = 1;
+    } else {
+      imgIndex = 0;
+    }
+    return  [red,blue, green][imgIndex]
     }
   },
 
@@ -52,35 +63,17 @@ export default {
     this.ctx = ctx
     canvas.width = this.radius * 2
     canvas.height = this.radius * 2
-    // 大半径
-    ctx.beginPath()
-    ctx.lineWidth = this.lineWidth
 
-    // 圆动画初始参数
-    var arcStack = [] // 圆栈
-    var bR = this.radius - this.radius * 0.08 * 0.8 * this.lineWidth
-    var soffset = -(Math.PI / 2) // 圆动画起始位置
-    // circleLock = true // 起始动画锁
-    // 获取圆动画轨迹点集
-    for (
-      var i = soffset;
-      i < soffset + 2 * Math.PI;
-      i += 1 / (this.radius * 0.08 * 0.8 * Math.PI)
-    ) {
-      arcStack.push([
-        this.radius + bR * Math.cos(i),
-        this.radius + bR * Math.sin(i)
-      ])
+    let width = canvas.width,height=canvas.height;
+    if (window.devicePixelRatio) {
+      canvas.style.width = this.radius * 2 + "px";
+      canvas.style.height = this.radius * 2 + "px";
+      canvas.height = height * window.devicePixelRatio;
+      canvas.width = width * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
-    // 圆起始点
-    var cStartPoint = arcStack.shift()
-    ctx.strokeStyle = '#1c86d1'
-    ctx.moveTo(cStartPoint[0], cStartPoint[1])
-    // 开始渲染
-    Promise.all([resolveImg(red), resolveImg(blue), resolveImg(green)]).then(res=>{
-      this.imgs = res;
-      this.updateCanvas()
-    })
+
+    this.drawTask()
   },
   beforeDestroy() {
     window.cancelAnimationFrame(this.animation)
@@ -88,6 +81,24 @@ export default {
     this.ctx = null
   },
   methods: {
+    drawTask() {// 控制帧率
+      var fps = 60;
+      var now;
+      var then = Date.now();
+      var interval = 1000/fps;
+      var delta;
+      let tick = ()=>{
+      　　this.animation=requestAnimationFrame(tick);
+      　　now = Date.now();
+      　　delta = now - then;
+      　　if (delta > interval) {
+      　　　　// 这里不能简单then=now，否则还会出现上边简单做法的细微时间差问题。例如fps=10，每帧100ms，而现在每16ms（60fps）执行一次draw。16*7=112>100，需要7次才实际绘制一次。这个情况下，实际10帧需要112*10=1120ms>1000ms才绘制完成。
+      　　　　then = now - (delta % interval);
+            this.updateCanvas(); // ... Code for Drawing the Frame ...
+      　　}
+      }
+      tick();
+    },
     drawSine() {
       var ctx = this.ctx
       ctx.globalAlpha =0.6;
@@ -117,97 +128,6 @@ export default {
       ctx.restore()
       ctx.globalAlpha =1;
     },
-    drawText() {
-      var ctx = this.ctx
-      ctx.globalCompositeOperation = 'source-over'
-      var size = 0.4 * this.cR
-      ctx.font = 'bold ' + size + 'px Microsoft Yahei'
-      var txt = (this.nowdata.toFixed(2) * 100).toFixed(0) + '%'
-      ctx.fillStyle = '#f6b71e'
-      ctx.textAlign = 'center'
-      ctx.fillText(
-        txt,
-        this.radius + this.radius * 0.04,
-        this.radius + this.radius * 0.16
-      )
-    },
-    // 最外面淡黄色圈
-    drawCircle() {
-      var ctx = this.ctx
-      ctx.beginPath()
-      ctx.lineWidth = (this.radius * 3) / 25
-      ctx.strokeStyle = '#fff89d'
-      ctx.arc(
-        this.radius,
-        this.radius,
-        this.cR + (this.radius * 7) / 125,
-        0,
-        2 * Math.PI
-      )
-      ctx.stroke()
-      ctx.restore()
-    },
-    // 灰色圆圈
-    grayCircle() {
-      var ctx = this.ctx
-      ctx.beginPath()
-      ctx.lineWidth = this.radius * 0.08
-      ctx.strokeStyle = '#eaeaea'
-      ctx.arc(
-        this.radius,
-        this.radius,
-        this.cR - this.radius * 0.04,
-        0,
-        2 * Math.PI
-      )
-      ctx.stroke()
-      ctx.restore()
-      ctx.beginPath()
-    },
-    // 橘黄色进度圈
-    orangeCircle() {
-      var ctx = this.ctx
-      ctx.beginPath()
-      ctx.strokeStyle = '#fbdb32'
-      // 使用这个使圆环两端是圆弧形状
-      ctx.lineCap = 'round'
-      ctx.arc(
-        this.radius,
-        this.radius,
-        this.cR - this.radius * 0.04,
-        0 * (Math.PI / 180.0) - Math.PI / 2,
-        this.nowdata * 360 * (Math.PI / 180.0) - Math.PI / 2
-      )
-      ctx.stroke()
-      ctx.save()
-    },
-    // 裁剪中间水圈
-    clipCircle() {
-      var ctx = this.ctx
-      var timeDown = this.timeDown
-      ctx.beginPath()
-      ctx.arc(
-        this.radius,
-        this.radius,
-        this.cR - this.radius * 0.08,
-        0,
-        2 * Math.PI,
-        false
-      )
-      ctx.clip()
-  let [red, blue, green] = this.imgs
-  let img = null;
-  img
-  if(timeDown>3600*12) {
-    img = green;
-  } else if (timeDown > 3600) {
-    img = blue;
-  } else {
-    img = red;
-  }
-  let lineWidth = this.radius * 0.08
-      ctx.drawImage(img, lineWidth ,lineWidth,(this.radius - lineWidth )*2, (this.radius - lineWidth)*2);
-    },
     updateCanvas() {
       var ctx = this.ctx
       var waveupsp = 0.006 // 水波上涨速度
@@ -215,15 +135,6 @@ export default {
       var data = ~~this.data / 100
       var nowdata = this.nowdata
       ctx.clearRect(0, 0, this.radius * 2, this.radius * 2)
-      // 最外面淡黄色圈
-      // this.drawCircle()
-      // 灰色圆圈
-      this.grayCircle()
-      // 橘黄色进度圈
-      //this.orangeCircle()
-      // 裁剪中间水圈
-      this.clipCircle()
-      // 控制波幅
       var nowrange = this.nowrange
       if (data >= 0.85) {
         if (nowrange > range / 4) {
@@ -258,13 +169,22 @@ export default {
       this.drawSine()
       // 写字
       //this.drawText()
-      this.animation = requestAnimationFrame(this.updateCanvas)
+      //this.animation = requestAnimationFrame(this.updateCanvas)
       // setTimeout(()=>window.cancelAnimationFrame(id), 3000)
     }
   }
 }
 </script>
 <style lang='less' scoped>
+div {
+
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border-radius: 50%;
+  overflow: hidden;
+ // border: 8px solid #eaeaea; /* no */
+  box-sizing: border-box;
+}
 canvas {
    pointer-events: none;
 }
