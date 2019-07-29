@@ -217,14 +217,14 @@
                                     energyConsumeCount ++
                                 })
                                 .catch(err => {
-                                    Toast(err);
+                                    // Toast(err);
+                                     if(energyConsumeCount>0) {
+                                        Toast("充了: "+energyConsumeCount+" 小时电, 电力不足")
+                                    }
                                     this.increaseLastUpdate = 0;
                                     this.clearTouchTask();
                                 })
                                 .then(() => {
-                                    if(--energyConsumeCount>0) {
-                                        Toast("充了: "+energyConsumeCount+" 小时电")
-                                    }
                                     energyInfo().then(res => {
                                         this.currentEnergyExpireSecond = res || 0;
                                         this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
