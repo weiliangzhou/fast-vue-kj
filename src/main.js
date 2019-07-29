@@ -30,6 +30,19 @@ Vue.config.productionTip = false;
 Vue.component(Qrcode.name, Qrcode);
 // fastclick.attach(document.body) // 防止用户在手机端的点击穿透
 /* eslint-disable no-new */
+// localStorage.userInfo = JSON.stringify({
+//   token: "01f74d291940425095cfe01820aa1757",
+//   id: 64,
+//   outOpenId: "684a2f83b29f45e0b777a196003754f8",
+//   headImgUrl:
+//     "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLCicuzbbgGgEnXCXJAXjibMicXicd7jrfbwibzgbKpkeTllPXqPXPM282pSyuhkPicnawicDloLHiagz6Mag/132",
+//   nickName: "爱在浪里",
+//   registerFrom: 1,
+//   createTime: "2019-07-25 11:46:23",
+//   updateTime: "2019-07-25 11:46:23",
+//   sex: 1
+// });
+
 new Vue({
   el: "#app",
   router,

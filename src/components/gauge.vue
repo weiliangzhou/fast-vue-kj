@@ -79,7 +79,7 @@ export default {
     // 开始渲染
     Promise.all([resolveImg(red), resolveImg(blue), resolveImg(green)]).then(res=>{
       this.imgs = res;
-      this.updateCanvas()
+      this.drawTask()
     })
   },
   beforeDestroy() {
@@ -88,6 +88,24 @@ export default {
     this.ctx = null
   },
   methods: {
+    drawTask() {// 控制帧率
+      var fps = 30;
+      var now;
+      var then = Date.now();
+      var interval = 1000/fps;
+      var delta;
+      let tick = ()=>{
+      　　this.animation=requestAnimationFrame(tick);
+      　　now = Date.now();
+      　　delta = now - then;
+      　　if (delta > interval) {
+      　　　　// 这里不能简单then=now，否则还会出现上边简单做法的细微时间差问题。例如fps=10，每帧100ms，而现在每16ms（60fps）执行一次draw。16*7=112>100，需要7次才实际绘制一次。这个情况下，实际10帧需要112*10=1120ms>1000ms才绘制完成。
+      　　　　then = now - (delta % interval);
+            this.updateCanvas(); // ... Code for Drawing the Frame ...
+      　　}
+      }
+      tick();
+    },
     drawSine() {
       var ctx = this.ctx
       ctx.globalAlpha =0.6;
@@ -258,7 +276,7 @@ export default {
       this.drawSine()
       // 写字
       //this.drawText()
-      this.animation = requestAnimationFrame(this.updateCanvas)
+      //this.animation = requestAnimationFrame(this.updateCanvas)
       // setTimeout(()=>window.cancelAnimationFrame(id), 3000)
     }
   }

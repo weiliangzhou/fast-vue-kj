@@ -22,7 +22,7 @@ const wxShare = param => {
     desc = "真实免费获取BTC，最高可获得0.1BTC",
     link = `${window.location.origin}/home?referUid=${referUid}`,
     type = "link",
-    imgUrl = 'https://img.mall.xc2018.com.cn/mall/upload/20190728/220256_62_0gpf.jpg',
+    imgUrl = "https://img.mall.xc2018.com.cn/mall/upload/20190728/220256_62_0gpf.jpg",
     success = () => {},
     cancel = () => {}
   } = param || {};

@@ -175,18 +175,18 @@ export const getWXConfig = url => {
 /**
  * @description 检查是否已经激活接口
  */
-const checkIsActive = cachePromise(() => {
-  let url = "/api/user/checkIsActive";
-  return axios.request({
-    url,
-    method: "get",
-    data: {}
-  });
-  // .then(res => {
-  //     res.isActive = false;
-  //     return res;
-  // });
-});
+// const checkIsActive = cachePromise(() => {
+//   let url = "/api/user/checkIsActive";
+//   return axios.request({
+//     url,
+//     method: "get",
+//     data: {}
+//   });
+//   // .then(res => {
+//   //     res.isActive = false;
+//   //     return res;
+//   // });
+// });
 // , () => {
 //     let temp = sessionStorage.getItem("checkIsActive")
 //     return temp ? JSON.parse(temp) : null;
@@ -228,25 +228,25 @@ const findOrderAllotList = ({ pageSize = 10, pageNum = 1, statsDate }) => {
 };
 
 // 刷新token
-const refreshToken = cachePromise(() => {
-  let { refreshToken = "", expiresAt = "" } = getUserInfo();
-  if (refreshToken) {
-    if (
-      expiresAt &&
-      new Date(expiresAt.replace(/-/g, "/")).getTime() - Date.now() > 0
-    ) {
-      return Promise.resolve("无需更新");
-    }
-    return axios
-      .request({
-        url: "/api/auth/refresh_token",
-        method: "get",
-        data: { refreshToken }
-      })
-      .then(newUserInfo => {
-        setUserInfo(newUserInfo);
-      });
-  } else {
-    return Promise.reject(new MyError("请先登录", 3));
-  }
-});
+// const refreshToken = cachePromise(() => {
+//   let { refreshToken = "", expiresAt = "" } = getUserInfo();
+//   if (refreshToken) {
+//     if (
+//       expiresAt &&
+//       new Date(expiresAt.replace(/-/g, "/")).getTime() - Date.now() > 0
+//     ) {
+//       return Promise.resolve("无需更新");
+//     }
+//     return axios
+//       .request({
+//         url: "/api/auth/refresh_token",
+//         method: "get",
+//         data: { refreshToken }
+//       })
+//       .then(newUserInfo => {
+//         setUserInfo(newUserInfo);
+//       });
+//   } else {
+//     return Promise.reject(new MyError("请先登录", 3));
+//   }
+// });
