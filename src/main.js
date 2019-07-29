@@ -28,6 +28,9 @@ Vue.mixin(shareMixin);
 Vue.use(Vuex);
 Vue.config.productionTip = false;
 Vue.component(Qrcode.name, Qrcode);
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
 // fastclick.attach(document.body) // 防止用户在手机端的点击穿透
 /* eslint-disable no-new */
 new Vue({
@@ -45,3 +48,7 @@ if (process.env.NODE_ENV !== "production") {
   /* eslint-disable no-new */
   Promise.resolve(require("vconsole")).then(VConsole => new VConsole());
 }
+// localStorage.userInfo=JSON.stringify({
+//     id:58,
+//     token:"4d13fbc5df4c4e149b4c6cdead106604"
+// })
