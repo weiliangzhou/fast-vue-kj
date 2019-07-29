@@ -34,6 +34,7 @@
                 <div class="label-container">
                     <div>
                         当前电力可用时间：
+                        &nbsp;
                         <span>{{TimeFormatHour}}</span>
                         <span>:</span>
                         <span>{{TimeFormatMinute}}</span>
@@ -353,9 +354,9 @@
 
     .top-container {
         margin-bottom: 20px;
-        padding: 10px 30px 0;
+        padding: 30px 30px 0;
         width: 100%;
-        height: 100%;
+        height: 1100px;
         box-sizing: border-box;
         overflow: hidden;
         background: rgba(146, 146, 146, 0.5);
@@ -443,7 +444,7 @@
             border-radius: 20px;
             border-radius: 20px;
             height: 170px;
-            top: 10%;
+            top: 3%;
 
             #jdt {
                 width: 428px;
@@ -479,7 +480,7 @@
             .label-container {
                 div {
                     ont-family: PingFangSC-Regular;
-                    font-size: 28px;
+                    font-size: 24px;
                     color: #FFFFFF;
                     letter-spacing: 0;
                     display: flex;

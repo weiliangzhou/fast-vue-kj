@@ -60,7 +60,7 @@ if (process.env.NODE_ENV !== "production") {
   /* eslint-disable no-new */
   Promise.resolve(require("vconsole")).then(VConsole => new VConsole());
 }
-// localStorage.userInfo=JSON.stringify({
-//     id:58,
-//     token:"4d13fbc5df4c4e149b4c6cdead106604"
-// })
+localStorage.userInfo=JSON.stringify({
+    id:58,
+    token:"4d13fbc5df4c4e149b4c6cdead106604"
+})
