@@ -45,10 +45,8 @@
                      @touchstart="onTouchStart"
                      @touchend="onTouchEnd"
                 >
-                    <img v-show="btnActive_1" id="cd_btn_true"
-                         src="http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/3e0332c8664948e9b62c2bd217e8f49a.png"/>
-                    <img v-show="btnActive_2" id="cd_btn_false"
-                         src="http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/3188b908281f44e3b56ccc526fce6f08.png"/>
+                    <span v-show="btnActive_1" id="cd_btn_true"></span>
+                    <span v-show="btnActive_2" id="cd_btn_false"></span>
                 </div>
             </div>
         </div>
@@ -205,6 +203,7 @@
                 this.btnActive_1 = false;
                 this.btnActive_2 = true;
                 this.increaseLastUpdate = 0;
+                let energyConsumeCount = 0
                 if (!this.touchStartTime) {
                     this.stopTimeDown();
                     this.touchStartTime = setInterval(() => {
@@ -214,6 +213,7 @@
                             this.increaseLastUpdate -= 3600;
                             energyConsume(1)
                                 .then(res => {
+                                    energyConsumeCount ++
                                 })
                                 .catch(err => {
                                     Toast(err);
@@ -221,6 +221,9 @@
                                     this.clearTouchTask();
                                 })
                                 .then(() => {
+                                    if(--energyConsumeCount>0) {
+                                        Toast("充了: "+energyConsumeCount+" 小时电")
+                                    }
                                     energyInfo().then(res => {
                                         this.currentEnergyExpireSecond = res || 0;
                                         this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
@@ -246,15 +249,21 @@
                 this.btnActive_1 = true;
                 this.btnActive_2 = false;
                 this.clearTouchTask();
+                let energyConsumeCount = Math.ceil(energyConsumeCount/3600)
                 if (this.increaseLastUpdate % 3600) {
                     this.increaseLastUpdate = 0;
                     energyConsume(1)
                         .then(res => {
-
+                            if(energyConsumeCount>0) {
+                                Toast("充了: "+energyConsumeCount+" 小时电")
+                            }
                         })
                         .catch(err => {
                             Toast(err);
                             this.clearTouchTask();
+                             if(--energyConsumeCount>0) {
+                                Toast("充了: "+energyConsumeCount+" 小时电")
+                            }
                         })
                         .then(res => {
                             energyInfo().then(res => {
@@ -267,6 +276,10 @@
                                 }
                             });
                         });
+                }else {
+                     if(energyConsumeCount>0) {
+                                Toast("充了: "+energyConsumeCount+" 小时电")
+                            }
                 }
             },
             completeTask(taskId) {
@@ -448,11 +461,17 @@
                 #cd_btn_true {
                     width: 100*1.2px;
                     height: 92*1.2px;
+                    background-image: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/3e0332c8664948e9b62c2bd217e8f49a.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
                 }
 
                 #cd_btn_false {
                     width: 100*1.2px;
                     height: 92*1.2px;
+                    background-image: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/3188b908281f44e3b56ccc526fce6f08.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
                 }
 
             }
@@ -780,6 +799,70 @@
     }
 
 
+@keyframes buzz-out {
+    0%,
+  100%,
+  20%,
+  50%,
+  80% {
+    transform: translate3d(0, 0, 0);
+  }
+    40%,
+  43% {
+    transform: translate3d(0, -30px, 0);
+  }
+    70% {
+    transform: translate3d(0, -15px, 0);
+  }
+    90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+.common_animate {
+  animation-fill-mode: both;
+  animation-name: buzz-out;
+  animation-iteration-count: infinite;
+  transform-origin: center bottom;
+  cursor: pointer;
+}
+.animate0 {
+  animation-delay: 0.1s;
+  animation-duration: 0.8s;
+}
+.animate1 {
+  animation-delay: 0.5s;
+  animation-duration: 1s;
+}
+
+.animate2 {
+  animation-delay: 0.3s;
+  animation-duration: 0.9s;
+}
+
+.animate3 {
+  animation-delay: 0.7s;
+  animation-duration: 1.1s;
+}
+
+.animate4 {
+  animation-delay: 0.9s;
+  animation-duration: 1.3s;
+}
+
+.animate5 {
+  animation-delay: 0.6s;
+  animation-duration: 1.5s;
+}
+
+.animate6 {
+  animation-delay: 0.2s;
+  animation-duration: 1.1s;
+}
+
+.animate7 {
+  animation-delay: 0.8s;
+  animation: duration 1.2s;
+}
 </style>
 <style lang='less'>
     .toast1 {

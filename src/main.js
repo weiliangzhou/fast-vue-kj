@@ -32,7 +32,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
 // fastclick.attach(document.body) // 防止用户在手机端的点击穿透
-/* eslint-disable no-new */
 // localStorage.userInfo = JSON.stringify({
 //   token: "01f74d291940425095cfe01820aa1757",
 //   id: 64,
@@ -45,7 +44,7 @@ Vue.use(ElementUI)
 //   updateTime: "2019-07-25 11:46:23",
 //   sex: 1
 // });
-
+/* eslint-disable no-new */
 new Vue({
   el: "#app",
   router,

@@ -205,10 +205,10 @@ export default {
 html {
   min-height: 100%;
   background: #fff;
-  // -webkit-user-select:none;
-  //   -moz-user-select:none;
-  //   -ms-user-select:none;
-  //   user-select:none;
+  -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
 }
 * {
   margin: 0;
