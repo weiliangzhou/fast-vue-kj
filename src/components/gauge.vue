@@ -220,7 +220,7 @@ export default {
       // 灰色圆圈
       this.grayCircle()
       // 橘黄色进度圈
-      this.orangeCircle()
+      //this.orangeCircle()
       // 裁剪中间水圈
       this.clipCircle()
       // 控制波幅
