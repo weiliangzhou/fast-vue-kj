@@ -19,8 +19,8 @@
           <li @click="showShareTips"><svg :style="{width: '40px', height: '40px'}" class="icon icon-svg" aria-hidden="true">
               <use xlink:href="#iconpyq"></use>
             </svg><span>朋友圈</span></li>
-          <li @click="copyShareUrl($event,copyContent)" id="tag-copy" :data-clipboard-text="copyContent">
-            <svg class="icon icon-svg" aria-hidden="true" :style="{cursor: 'pointer', width: '40px', height: '40px'}" data-clipboard-text='http://kj.yizhidao9.com'>
+          <li @click="copyShareUrl($event)" id="tag-copy">
+            <svg class="icon icon-svg" aria-hidden="true" :style="{cursor: 'pointer', width: '40px', height: '40px'}">
               <use xlink:href="#iconlink"></use>
             </svg>
             <span>复制链接</span>
@@ -41,14 +41,13 @@
 
 import Clipboard from 'clipboard';
 import shareImg from "./shareImg.png"
-import { copyTextToClipboard, getUserInfo } from "@/global"
+import { getUserInfo } from "@/global"
 export default {
   data() {
     return {
       shareContextIsShow: false,
       shareTipsImgIsShow: false,
       shareImg: shareImg,
-      copyContent: ''
     }
   },
   name: 'App',
@@ -70,9 +69,10 @@ export default {
     setShareContext(flag = false) {
       this.shareContextIsShow = flag;
     },
-    copyShareUrl(e, text) {
-
-       const clipboard = new Clipboard(e.currentTarget, { text: () => text })
+    copyShareUrl(e) {
+      let user = getUserInfo()
+      let text = window.location.origin+"/home/index?referUid=" + user.id
+      const clipboard = new Clipboard(e.currentTarget, { text: () => text })
       clipboard.on('success', e => {
         console.log({ type: 'success', message: '复制成功' })
         // 释放内存
@@ -92,8 +92,7 @@ export default {
     }
   },
   mounted() {
-          let user = getUserInfo()
-      this.copyContent = window.location.origin+"/home/index?referUid=" + user.id
+
   },
   computed: {}
 }

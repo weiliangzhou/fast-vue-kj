@@ -1,3 +1,4 @@
+import { login } from "./wx";
 let localUserInfo = null;
 /* eslint-disable camelcase */
 let set_userInfo_or_relogin = ({
@@ -32,7 +33,7 @@ let get_userInfo_or_relogin = () => {
     return localUserInfo || (localUserInfo = get_local_userInfo_or_throw());
   } catch (e) {
     localStorage.clear();
-    location.href = `${location.origin}/login`;
+    login();
   }
 };
 
