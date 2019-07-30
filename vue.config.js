@@ -20,6 +20,28 @@ const proxyTargetMap = {
 let proxyTarget = proxyTargetMap[process.env.API_TYPE] || proxyTargetMap.prod;
 let publicPath = process.env.NODE_ENV === "production" ? "/" : "/";
 let dllPublishPath = "/vendor";
+
+const cdn = {
+  production: {
+    css: [],
+    js: [
+      "https://cdn.staticfile.org/vue/2.6.10/vue.runtime.min.js",
+      "https://cdn.staticfile.org/vue-router/3.0.7/vue-router.min.js",
+      "https://cdn.staticfile.org/vuex/3.1.1/vuex.min.js",
+      "https://cdn.staticfile.org/axios/0.19.0/axios.min.js",
+      "https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js"
+    ],
+    externals: {
+      // wx: 'wx',
+      vue: "Vue",
+      "vue-router": "VueRouter",
+      vuex: "Vuex",
+      axios: "axios",
+      clipboard: "ClipboardJS"
+    }
+  }
+}[process.env.NODE_ENV] || { css: [], js: [], externals: {} };
+
 module.exports = {
   publicPath: publicPath,
   outputDir: "dist",
@@ -55,6 +77,12 @@ module.exports = {
     config.resolve.alias
       .set("@", resolve("src"))
       .set("_conf", resolve("src/conf"));
+
+    // 使用cdn
+    config.plugin("html").tap(args => {
+      args[0].cdn = cdn;
+      return args;
+    });
   },
   // CSS 相关选项
   css: {
@@ -155,6 +183,7 @@ module.exports = {
     // });
 
     return {
+      externals: cdn.externals,
       optimization: {
         splitChunks: {
           cacheGroups: {
