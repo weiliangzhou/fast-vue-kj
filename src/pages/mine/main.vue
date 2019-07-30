@@ -167,7 +167,7 @@ section[id='person-container'] {
   display: flex;
   flex-direction: column;
   position: relative;
-  background-image: url('./account_bg.png');
+  background-image: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190730/c5d66c6c4cb8441abe29c6c611c2572d.png');
   background-repeat: no-repeat;
   background-size: 690px 200px;
   border-radius: 20px;

@@ -28,7 +28,7 @@
 
             <div class="part3">
                 <div id="jdt">
-                    <mt-progress  :value="percentAge" :bar-height="18">
+                    <mt-progress :value="percentAge" :bar-height="18">
                         <div slot="end" style="color: white;font-size: 12px">&nbsp;{{percentAge}}%</div>
                     </mt-progress>
                 </div>
@@ -115,12 +115,11 @@
 <script>
     import {Toast} from "@/global";
     import {completeTask, energyConsume, energyInfo, homepageInfo} from "@/api";
-    import yaoqing from "./icon_yaoqing.png";
 
     export default {
         data() {
             return {
-                iconList: [yaoqing],
+                iconList: ['http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190730/26dca687c89848f0a5aaca2b21e7911f.png'],
                 btcInfo: 0.0000000000,
                 btcInfoDesc: "0",
                 currentEnergyExpireSecond: 0,
@@ -139,7 +138,7 @@
         computed: {
             bollTasks() {
                 return this.myTaskInfoList.filter(
-                    item =>  !item.complete
+                    item => !item.complete
                 );
             },
             TimeFormatHour() {
@@ -206,18 +205,18 @@
                     if (!this.touchStartTime) {
                         this.stopTimeDown();
                         this.touchStartTime = setInterval(() => {
-                            let increase = 3*60 + parseInt(Math.random() * 10);
+                            let increase = 3 * 60 + parseInt(Math.random() * 10);
                             this.increaseLastUpdate += increase;
                             if (this.increaseLastUpdate >= 3600) {
                                 this.increaseLastUpdate -= 3600;
                                 energyConsume(1)
                                     .then(res => {
-                                        energyConsumeCount ++
+                                        energyConsumeCount++
                                     })
                                     .catch(err => {
                                         // Toast(err);
-                                        if(energyConsumeCount>0) {
-                                            Toast("充了: "+energyConsumeCount+" 小时电, 电力不足")
+                                        if (energyConsumeCount > 0) {
+                                            Toast("充了: " + energyConsumeCount + " 小时电, 电力不足")
                                         } else {
                                             Toast(err)
                                         }
@@ -251,7 +250,7 @@
                 let time2 = new Date();
                 let result = time2 - this.startToEndTime;
                 // 当按钮弹起时，如果result的时间小于500毫秒，那么清除touchstart事件触发发this.timer1
-                if(result < 500) {
+                if (result < 500) {
                     clearTimeout(this.timer1);
                     Toast('请长按充电');
                     return;
@@ -259,20 +258,20 @@
                 this.btnActive_1 = true;
                 this.btnActive_2 = false;
                 this.clearTouchTask();
-                let energyConsumeCount = Math.ceil(energyConsumeCount/3600)
+                let energyConsumeCount = Math.ceil(energyConsumeCount / 3600)
                 if (this.increaseLastUpdate % 3600) {
                     this.increaseLastUpdate = 0;
                     energyConsume(1)
                         .then(res => {
-                            if(energyConsumeCount>0) {
-                                Toast("充了: "+energyConsumeCount+" 小时电")
+                            if (energyConsumeCount > 0) {
+                                Toast("充了: " + energyConsumeCount + " 小时电")
                             }
                         })
                         .catch(err => {
                             Toast(err);
                             this.clearTouchTask();
-                             if(--energyConsumeCount>0) {
-                                Toast("充了: "+energyConsumeCount+" 小时电")
+                            if (--energyConsumeCount > 0) {
+                                Toast("充了: " + energyConsumeCount + " 小时电")
                             }
                         })
                         .then(res => {
@@ -286,10 +285,10 @@
                                 }
                             });
                         });
-                }else {
-                     if(energyConsumeCount>0) {
-                                Toast("充了: "+energyConsumeCount+" 小时电")
-                            }
+                } else {
+                    if (energyConsumeCount > 0) {
+                        Toast("充了: " + energyConsumeCount + " 小时电")
+                    }
                 }
             },
             completeTask(taskId) {
@@ -347,560 +346,568 @@
 </script>
 
 <style lang='less' scoped>
-#home-view {
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background: rgba(244, 244, 244, 1);
-  align-items: center;
-  position: relative;
-  overflow-y: scroll; //该属性随着手指离开立即停止
-  -webkit-overflow-scrolling: touch; //该属性随着手指离开还会保持滚动
-  min-height: 100%;
-  flex: 1;
-}
-
-.top-container {
-  margin-bottom: 20px;
-  padding: 50px 30px 0;
-  width: 100%;
-  height: 1108px;
-  box-sizing: border-box;
-  overflow: hidden;
-  background: rgba(146, 146, 146, 0.5);
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/a42775d2858846f685b7c11934f5d362.png');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-
-  .part1 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 156px;
-    background: rgba(32, 0, 70, 1);
-    border: 3px solid rgba(0, 208, 255, 1);
-    border-radius: 20px;
-    position: relative;
-    padding-top: 30px;
-    box-sizing: border-box;
-
-    h6 {
-      width: 400px;
-      height: 60px;
-      background: rgb(53, 0, 120);
-      border: 3px solid rgba(0, 255, 255, 1);
-      font-size: 32px;
-      font-family: PingFangSC-Medium;
-      letter-spacing: 1.28px;
-      border-radius: 40px;
-      text-align: center;
-      line-height: 60px;
-      box-sizing: border-box;
-      color: white;
-      position: absolute;
-      top: 0;
-      right: 50%;
-      transform: translate(50%, -50%);
-    }
-
-    p {
-      font-family: PingFangSC-Semibold;
-      font-size: 60px;
-      font-weight: 600;
-      height: 84px;
-      letter-spacing: 3px;
-      color: white;
-    }
-
-    button {
-      width: 100px;
-      height: 40px;
-      border: 1px solid rgb(0, 56, 143);
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      border-radius: 20px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-image: linear-gradient(
-        to bottom,
-        rgb(0, 148, 234) 0%,
-        rgb(0, 56, 164) 100%
-      );
-
-      span {
-        color: white;
-        font-family: PingFangSC-Semibold;
-        font-size: 20px;
-        letter-spacing: 0.8px;
-        height: 20px;
-        margin-bottom: 4px;
-      }
-    }
-  }
-
-  .part3 {
-    display: flex;
-    position: relative;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 20px;
-    border-radius: 20px;
-    height: 170px;
-    top: 3%;
-
-    #jdt {
-      width: 428px;
-      margin-top: 40px;
-      margin-left: 8%;
-    }
-
-    #cd_btn_div {
-      display: flex;
-      position: absolute;
-      margin-top: 35px;
-      left: 77%;
-
-      #cd_btn_true {
-        width: 100 * 1.2px;
-        height: 92 * 1.2px;
-        background-image: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/3e0332c8664948e9b62c2bd217e8f49a.png');
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-      }
-
-      #cd_btn_false {
-        width: 100 * 1.2px;
-        height: 92 * 1.2px;
-        background-image: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/3188b908281f44e3b56ccc526fce6f08.png');
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
-      }
-    }
-
-    .label-container {
-      div {
-        ont-family: PingFangSC-Regular;
-        font-size: 24px;
-        color: #ffffff;
-        letter-spacing: 0;
+    #home-view {
+        width: 100vw;
         display: flex;
-        position: absolute;
-        top: 50%;
-        left: 8%;
-      }
-    }
-  }
-
-  .part2 {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-
-    .text-container {
-      padding: 28px 83px 23px;
-      box-sizing: border-box;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      flex-direction: row;
-
-      & > p {
-        font-family: PingFangSC-Medium;
-        font-size: 28px;
-        color: #ffffff;
-        letter-spacing: 0;
-        text-align: center;
-        height: 40px;
-        line-height: 40px;
+        flex-direction: column;
+        box-sizing: border-box;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background: rgba(244, 244, 244, 1);
+        align-items: center;
         position: relative;
+        overflow-y: scroll; //该属性随着手指离开立即停止
+        -webkit-overflow-scrolling: touch; //该属性随着手指离开还会保持滚动
+        min-height: 100%;
+        flex: 1;
+    }
 
-        span {
-          font-family: PingFangSC-Medium;
-          font-size: 24px;
-          color: #ffffff;
-          letter-spacing: 0;
-          text-align: center;
-          line-height: 33px;
-          position: absolute;
-          top: -40%;
-          right: -90px;
-          width: 80px;
-          height: 36px;
-          background: url('./dayBg.png');
-          background-repeat: no-repeat;
-          background-size: 80px 36px;
-        }
-      }
-
-      .right-container {
+    .top-container {
+        margin-bottom: 20px;
+        padding: 50px 30px 0;
+        width: 100%;
+        height: 1108px;
+        box-sizing: border-box;
+        overflow: hidden;
+        background: rgba(146, 146, 146, 0.5);
         display: flex;
         flex-direction: column;
+        box-sizing: border-box;
+        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/a42775d2858846f685b7c11934f5d362.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
 
-        & > span:first-of-type {
-          font-family: PingFangSC-Medium;
-          font-size: 20px;
-          color: #999999;
-          letter-spacing: 0;
-          text-align: center;
-          height: 28px;
-          line-height: 28px;
+        .part1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 156px;
+            background: rgba(32, 0, 70, 1);
+            border: 3px solid rgba(0, 208, 255, 1);
+            border-radius: 20px;
+            position: relative;
+            padding-top: 30px;
+            box-sizing: border-box;
+
+            h6 {
+                width: 400px;
+                height: 60px;
+                background: rgb(53, 0, 120);
+                border: 3px solid rgba(0, 255, 255, 1);
+                font-size: 32px;
+                font-family: PingFangSC-Medium;
+                letter-spacing: 1.28px;
+                border-radius: 40px;
+                text-align: center;
+                line-height: 60px;
+                box-sizing: border-box;
+                color: white;
+                position: absolute;
+                top: 0;
+                right: 50%;
+                transform: translate(50%, -50%);
+            }
+
+            p {
+                font-family: PingFangSC-Semibold;
+                font-size: 60px;
+                font-weight: 600;
+                height: 84px;
+                letter-spacing: 3px;
+                color: white;
+            }
+
+            button {
+                width: 100px;
+                height: 40px;
+                border: 1px solid rgb(0, 56, 143);
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                border-radius: 20px;
+                overflow: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-image: linear-gradient(to bottom,
+                rgb(0, 148, 234) 0%,
+                rgb(0, 56, 164) 100%);
+
+                span {
+                    color: white;
+                    font-family: PingFangSC-Semibold;
+                    font-size: 20px;
+                    letter-spacing: 0.8px;
+                    height: 20px;
+                    margin-bottom: 4px;
+                }
+            }
         }
 
-        & > span:last-of-type {
-          font-family: PingFangSC-Medium;
-          font-size: 32px;
-          color: #ffffff;
-          letter-spacing: 0;
-          text-align: center;
-          height: 45px;
-          line-height: 45px;
-          font-weight: 600;
+        .part3 {
+            display: flex;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            border-radius: 20px;
+            height: 170px;
+            top: 3%;
+
+            #jdt {
+                width: 428px;
+                margin-top: 40px;
+                margin-left: 8%;
+            }
+
+            #cd_btn_div {
+                display: flex;
+                position: absolute;
+                margin-top: 35px;
+                left: 77%;
+
+                #cd_btn_true {
+                    width: 100 * 1.2px;
+                    height: 92 * 1.2px;
+                    background-image: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/3e0332c8664948e9b62c2bd217e8f49a.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                }
+
+                #cd_btn_false {
+                    width: 100 * 1.2px;
+                    height: 92 * 1.2px;
+                    background-image: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190729/3188b908281f44e3b56ccc526fce6f08.png');
+                    background-repeat: no-repeat;
+                    background-size: 100% 100%;
+                }
+            }
+
+            .label-container {
+                div {
+                    ont-family: PingFangSC-Regular;
+                    font-size: 24px;
+                    color: #ffffff;
+                    letter-spacing: 0;
+                    display: flex;
+                    position: absolute;
+                    top: 50%;
+                    left: 8%;
+                }
+            }
         }
-      }
+
+        .part2 {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            .text-container {
+                padding: 28px 83px 23px;
+                box-sizing: border-box;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                flex-direction: row;
+
+                & > p {
+                    font-family: PingFangSC-Medium;
+                    font-size: 28px;
+                    color: #ffffff;
+                    letter-spacing: 0;
+                    text-align: center;
+                    height: 40px;
+                    line-height: 40px;
+                    position: relative;
+
+                    span {
+                        font-family: PingFangSC-Medium;
+                        font-size: 24px;
+                        color: #ffffff;
+                        letter-spacing: 0;
+                        text-align: center;
+                        line-height: 33px;
+                        position: absolute;
+                        top: -40%;
+                        right: -90px;
+                        width: 80px;
+                        height: 36px;
+                        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190730/413d5d154e0e4552bcca16fa4c0883bd.png');
+                        background-repeat: no-repeat;
+                        background-size: 80px 36px;
+                    }
+                }
+
+                .right-container {
+                    display: flex;
+                    flex-direction: column;
+
+                    & > span:first-of-type {
+                        font-family: PingFangSC-Medium;
+                        font-size: 20px;
+                        color: #999999;
+                        letter-spacing: 0;
+                        text-align: center;
+                        height: 28px;
+                        line-height: 28px;
+                    }
+
+                    & > span:last-of-type {
+                        font-family: PingFangSC-Medium;
+                        font-size: 32px;
+                        color: #ffffff;
+                        letter-spacing: 0;
+                        text-align: center;
+                        height: 45px;
+                        line-height: 45px;
+                        font-weight: 600;
+                    }
+                }
+            }
+
+            .boll-container {
+                height: 536px;
+                position: relative;
+                width: 100%;
+
+                li {
+                    display: flex;
+                    flex-direction: column;
+                    position: absolute;
+
+                    p {
+                        width: 104px;
+                        height: 104px;
+                        border-radius: 50%;
+                        overflow: hidden;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background-repeat: no-repeat;
+                        background-size: 104px 104px;
+
+                        span {
+                            font-family: PingFangSC-Semibold;
+                            font-size: 36px;
+                            color: #ffffff;
+                            letter-spacing: 0.5px;
+                            text-align: center;
+                            height: 50px;
+                            line-height: 50px;
+                        }
+                    }
+
+                    span {
+                        font-family: PingFangSC-Regular;
+                        font-size: 24px;
+                        color: #ffffff;
+                        letter-spacing: 0;
+                        text-align: center;
+                        /*margin-top: 6px;*/
+                        line-height: 33px;
+                        height: 33px;
+                    }
+                }
+            }
+        }
     }
 
-    .boll-container {
-      height: 536px;
-      position: relative;
-      width: 100%;
+    .task-container {
+        padding: 16px 20px 0;
+        background: #fff;
+        width: 100%;
+        box-sizing: border-box;
 
-      li {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
+        ul {
+            margin-top: 44px;
+
+            h5 {
+                display: flex;
+                padding: 0 20px 0 24px;
+                margin-bottom: 16px;
+
+                p {
+                    font-family: PingFangSC-Medium;
+                    font-size: 28px;
+                    color: #333333;
+                    letter-spacing: 0;
+                    height: 40px;
+                    line-height: 40px;
+                    flex: 1;
+                    margin-right: 20px;
+                }
+
+                span {
+                    font-family: PingFangSC-Medium;
+                    font-size: 28px;
+                    color: #009cff;
+                    letter-spacing: 0;
+                    height: 40px;
+                    line-height: 40px;
+                }
+            }
+
+            li {
+                height: 200px;
+                background: #ff3043;
+                box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.1);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                padding: 0 40px;
+                margin-bottom: 28px;
+
+                img {
+                    display: block;
+                    width: 120px;
+                    height: 120px;
+                    margin-right: 40px;
+                    background: rgba(0, 0, 0, 0.3);
+                    border-radius: 50%;
+                }
+
+                & > div {
+                    flex: 1;
+                    margin-right: 20px;
+
+                    h6 {
+                        height: 37px;
+                        font-family: PingFangSC-Medium;
+                        font-size: 26px;
+                        color: #ffffff;
+                        letter-spacing: 0;
+                        line-height: 37px;
+                    }
+
+                    p {
+                        font-family: PingFangSC-Regular;
+                        font-size: 22px;
+                        color: #ffffff;
+                        letter-spacing: 0;
+                        height: 32px;
+                        line-height: 30px;
+                    }
+                }
+
+                button {
+                    background: #ffffff;
+                    border-radius: 20px;
+                    padding: 6px 34px;
+                    border: none;
+
+                    span {
+                        font-family: PingFangSC-Regular;
+                        font-size: 22px;
+                        color: #ffb400;
+                        letter-spacing: 0;
+                        height: 30px;
+                        line-height: 30px;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
+
+    .tips {
+        h4 {
+            padding: 56px 0 40px;
+
+            img {
+                width: 384px;
+                display: block;
+                margin: auto;
+            }
+        }
+
+        & > div {
+            background: #8c73e4;
+            box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 30px 26px 30px 34px;
+            box-sizing: border-box;
+            white-space: pre-line;
+
+            p {
+                white-space: pre-line;
+                font-family: PingFangSC-Regular;
+                font-size: 22px;
+                color: #ffffff;
+                letter-spacing: 0;
+                line-height: 34px;
+            }
+
+            h5 {
+                text-align: center;
+                margin: 32px 0 16px;
+
+                span {
+                    background: #7659da;
+                    border-radius: 24px;
+                    height: 18.5px;
+                    line-height: 18.5px;
+                    font-family: PingFangSC-Semibold;
+                    font-size: 26px;
+                    color: #ffffff;
+                    letter-spacing: 0;
+                    text-align: center;
+                    padding: 8px 24px;
+                }
+            }
+        }
+    }
+
+    @keyframes buzz-out {
+        0%,
+        100%,
+        20%,
+        50%,
+        80% {
+            transform: translate3d(0, 0, 0);
+        }
+        40%,
+        43% {
+            transform: translate3d(0, -30px, 0);
+        }
+        70% {
+            transform: translate3d(0, -15px, 0);
+        }
+        90% {
+            transform: translate3d(0, -4px, 0);
+        }
+    }
+
+    .common_animate {
+        animation-fill-mode: both;
+        animation-name: buzz-out;
+        animation-iteration-count: infinite;
+        transform-origin: center bottom;
+        cursor: pointer;
+        background-repeat: no-repeat;
+        background-size: 104px 104px;
+    }
+
+    .animate0 {
+        animation-delay: 0.2s;
+        animation-duration: 0.8s;
+        left: 46px;
+        top: 5px;
+
+        & > p {
+            background: url('./icon_fudongY.png');
+        }
+    }
+
+    .animate1 {
+        animation-delay: 0.5s;
+        animation-duration: 1s;
+        top: 36px;
+        right: 30px;
 
         p {
-          width: 104px;
-          height: 104px;
-          border-radius: 50%;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-repeat: no-repeat;
-          background-size: 104px 104px;
-
-          span {
-            font-family: PingFangSC-Semibold;
-            font-size: 36px;
-            color: #ffffff;
-            letter-spacing: 0.5px;
-            text-align: center;
-            height: 50px;
-            line-height: 50px;
-          }
+            background: url('./icon_fudongC.png');
         }
-
-        span {
-          font-family: PingFangSC-Regular;
-          font-size: 24px;
-          color: #ffffff;
-          letter-spacing: 0;
-          text-align: center;
-          /*margin-top: 6px;*/
-          line-height: 33px;
-          height: 33px;
-        }
-      }
-    }
-  }
-}
-
-.task-container {
-  padding: 16px 20px 0;
-  background: #fff;
-  width: 100%;
-  box-sizing: border-box;
-
-  ul {
-    margin-top: 44px;
-
-    h5 {
-      display: flex;
-      padding: 0 20px 0 24px;
-      margin-bottom: 16px;
-
-      p {
-        font-family: PingFangSC-Medium;
-        font-size: 28px;
-        color: #333333;
-        letter-spacing: 0;
-        height: 40px;
-        line-height: 40px;
-        flex: 1;
-        margin-right: 20px;
-      }
-
-      span {
-        font-family: PingFangSC-Medium;
-        font-size: 28px;
-        color: #009cff;
-        letter-spacing: 0;
-        height: 40px;
-        line-height: 40px;
-      }
     }
 
-    li {
-      height: 200px;
-      background: #ff3043;
-      box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.1);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      padding: 0 40px;
-      margin-bottom: 28px;
-
-      img {
-        display: block;
-        width: 120px;
-        height: 120px;
-        margin-right: 40px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 50%;
-      }
-
-      & > div {
-        flex: 1;
-        margin-right: 20px;
-
-        h6 {
-          height: 37px;
-          font-family: PingFangSC-Medium;
-          font-size: 26px;
-          color: #ffffff;
-          letter-spacing: 0;
-          line-height: 37px;
-        }
+    .animate2 {
+        animation-delay: 0.3s;
+        animation-duration: 0.9s;
+        right: 53px;
+        bottom: 11px;
 
         p {
-          font-family: PingFangSC-Regular;
-          font-size: 22px;
-          color: #ffffff;
-          letter-spacing: 0;
-          height: 32px;
-          line-height: 30px;
+            background: url('./icon3.png');
         }
-      }
+    }
 
-      button {
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 6px 34px;
-        border: none;
+    .animate3 {
+        animation-delay: 0.7s;
+        animation-duration: 1.1s;
+        left: 40px;
+        bottom: 40px;
 
-        span {
-          font-family: PingFangSC-Regular;
-          font-size: 22px;
-          color: #ffb400;
-          letter-spacing: 0;
-          height: 30px;
-          line-height: 30px;
-          font-weight: 600;
+        p {
+            background: url('./icon_fudongB.png');
         }
-      }
-    }
-  }
-}
-
-.tips {
-  h4 {
-    padding: 56px 0 40px;
-
-    img {
-      width: 384px;
-      display: block;
-      margin: auto;
-    }
-  }
-
-  & > div {
-    background: #8c73e4;
-    box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.1);
-    border-radius: 16px;
-    padding: 30px 26px 30px 34px;
-    box-sizing: border-box;
-    white-space: pre-line;
-
-    p {
-      white-space: pre-line;
-      font-family: PingFangSC-Regular;
-      font-size: 22px;
-      color: #ffffff;
-      letter-spacing: 0;
-      line-height: 34px;
     }
 
-    h5 {
-      text-align: center;
-      margin: 32px 0 16px;
+    .animate4 {
+        animation-delay: 0.9s;
+        animation-duration: 1.3s;
+        right: 293px;
+        bottom: 111px;
 
-      span {
-        background: #7659da;
-        border-radius: 24px;
-        height: 18.5px;
-        line-height: 18.5px;
-        font-family: PingFangSC-Semibold;
-        font-size: 26px;
-        color: #ffffff;
-        letter-spacing: 0;
-        text-align: center;
-        padding: 8px 24px;
-      }
+        p {
+            background: url('./icon_fudongB.png');
+        }
     }
-  }
-}
 
-@keyframes buzz-out {
-  0%,
-  100%,
-  20%,
-  50%,
-  80% {
-    transform: translate3d(0, 0, 0);
-  }
-  40%,
-  43% {
-    transform: translate3d(0, -30px, 0);
-  }
-  70% {
-    transform: translate3d(0, -15px, 0);
-  }
-  90% {
-    transform: translate3d(0, -4px, 0);
-  }
-}
-.common_animate {
-  animation-fill-mode: both;
-  animation-name: buzz-out;
-  animation-iteration-count: infinite;
-  transform-origin: center bottom;
-  cursor: pointer;
-  background-repeat: no-repeat;
-  background-size: 104px 104px;
-}
-.animate0 {
-  animation-delay: 0.2s;
-  animation-duration: 0.8s;
-  left: 46px;
-  top: 5px;
-  & > p {
-    background: url('./icon_fudongY.png');
-  }
-}
+    .animate5 {
+        animation-delay: 0.6s;
+        animation-duration: 1.5s;
+        right: 83px;
+        bottom: 150px;
 
-.animate1 {
-  animation-delay: 0.5s;
-  animation-duration: 1s;
-  top: 36px;
-  right: 30px;
-  p {
-    background: url('./icon_fudongC.png');
-  }
-}
+        p {
+            background: url('./icon3.png');
+        }
+    }
 
-.animate2 {
-  animation-delay: 0.3s;
-  animation-duration: 0.9s;
-  right: 53px;
-  bottom: 11px;
-  p {
-    background: url('./icon3.png');
-  }
-}
+    .animate6 {
+        animation-delay: 0.2s;
+        animation-duration: 1.1s;
+        top: 100px;
+        right: 200px;
 
-.animate3 {
-  animation-delay: 0.7s;
-  animation-duration: 1.1s;
-  left: 40px;
-  bottom: 40px;
-  p {
-    background: url('./icon_fudongB.png');
-  }
-}
+        p {
+            background: url('./icon_fudongC.png');
+        }
+    }
 
-.animate4 {
-  animation-delay: 0.9s;
-  animation-duration: 1.3s;
-  right: 293px;
-  bottom: 111px;
-  p {
-    background: url('./icon_fudongB.png');
-  }
-}
+    .animate7 {
+        animation-delay: 0.8s;
+        animation-duration: 1.2s;
+        left: 20px;
+        top: 160px;
 
-.animate5 {
-  animation-delay: 0.6s;
-  animation-duration: 1.5s;
-  right: 83px;
-  bottom: 150px;
-  p {
-    background: url('./icon3.png');
-  }
-}
-
-.animate6 {
-  animation-delay: 0.2s;
-  animation-duration: 1.1s;
-  top: 100px;
-  right: 200px;
-  p {
-    background: url('./icon_fudongC.png');
-  }
-}
-
-.animate7 {
-  animation-delay: 0.8s;
-  animation-duration: 1.2s;
-  left: 20px;
-  top: 160px;
-  & > p {
-    background: url('./icon_fudongY.png');
-  }
-}
+        & > p {
+            background: url('./icon_fudongY.png');
+        }
+    }
 </style>
 <style lang='less'>
-.toast1 {
-  position: fixed;
-  z-index: 10;
-  top: 0;
-  right: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    .toast1 {
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-  div {
-    width: 200px;
-    height: 190px;
-    border-radius: 20px;
-    background: url('./icon_toast1.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
+        div {
+            width: 200px;
+            height: 190px;
+            border-radius: 20px;
+            background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190730/f851e6ad2a8740218f8b37b0e8c0f6fb.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
 
-    span {
-      font-family: PingFangSC-Medium;
-      font-size: 28px;
-      color: #2cd781;
-      letter-spacing: 0;
-      text-align: justify;
-      height: 40px;
-      line-height: 40px;
-      margin-bottom: 28px;
+            span {
+                font-family: PingFangSC-Medium;
+                font-size: 28px;
+                color: #2cd781;
+                letter-spacing: 0;
+                text-align: justify;
+                height: 40px;
+                line-height: 40px;
+                margin-bottom: 28px;
+            }
+        }
     }
-  }
-}
 </style>
