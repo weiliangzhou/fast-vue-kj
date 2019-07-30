@@ -84,7 +84,7 @@ router.afterEach(to => {
     document.title = title;
   }
 });
-let isRefresh = sessionStorage.getItem("isRefresh");
+let isRefresh = sessionStorage.getItem("isRefresh")||true;
 window.isRefresh = true;
 router.onReady(() => {
   if (process.env.NODE_ENV == "production" && !isRefresh) {

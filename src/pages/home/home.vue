@@ -220,6 +220,8 @@
                                     // Toast(err);
                                      if(energyConsumeCount>0) {
                                         Toast("充了: "+energyConsumeCount+" 小时电, 电力不足")
+                                    } else {
+                                        Toast(err)
                                     }
                                     this.increaseLastUpdate = 0;
                                     this.clearTouchTask();
