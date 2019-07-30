@@ -139,7 +139,7 @@
         computed: {
             bollTasks() {
                 return this.myTaskInfoList.filter(
-                    item => item.type == 3 || !item.complete
+                    item =>  !item.complete
                 );
             },
             TimeFormatHour() {
@@ -298,21 +298,23 @@
                 let currentTask = this.myTaskInfoList.findIndex(
                     item => item.id == taskId
                 );
+                completeTask(taskId).then(res => {
+                    this.myTaskInfoList[currentTask].complete = true;
+                    this.myTaskInfoList[currentTask].btnName = "已完成";
+                    if (this.myTaskInfoList[currentTask].hours) {
+                        this.showToast1("电力+" + this.myTaskInfoList[currentTask].hours);
+                    }
+
+                });
                 if (currentTask !== -1 && this.myTaskInfoList[currentTask].hrefUrl) {
                     location.href = this.myTaskInfoList[currentTask].hrefUrl;
-                } else if (
-                    currentTask !== -1 &&
-                    this.myTaskInfoList[currentTask].complete == false
-                ) {
-                    completeTask(taskId).then(res => {
-                        this.myTaskInfoList[currentTask].complete = true;
-                        this.myTaskInfoList[currentTask].btnName = "已完成";
-                        if (this.myTaskInfoList[currentTask].hours) {
-                            this.showToast1("电力+" + this.myTaskInfoList[currentTask].hours);
-                        }
-
-                    });
                 }
+                // else if (
+                //     currentTask !== -1 &&
+                //     this.myTaskInfoList[currentTask].complete == false
+                // ) {
+                //
+                // }
             },
             startTimeDown() {
                 if (!this.btcInfoTime && this.currentEnergyExpireSecond > 0) {
@@ -809,21 +811,21 @@
 
 
 @keyframes buzz-out {
-    0%,
+  0%,
   100%,
   20%,
   50%,
   80% {
     transform: translate3d(0, 0, 0);
   }
-    40%,
+  40%,
   43% {
     transform: translate3d(0, -30px, 0);
   }
-    70% {
+  70% {
     transform: translate3d(0, -15px, 0);
   }
-    90% {
+  90% {
     transform: translate3d(0, -4px, 0);
   }
 }
