@@ -208,7 +208,7 @@
                     if (!this.touchStartTime) {
                         this.stopTimeDown();
                         this.touchStartTime = setInterval(() => {
-                            let increase = 60 + parseInt(Math.random() * 10);
+                            let increase = 3*60 + parseInt(Math.random() * 10);
                             this.increaseLastUpdate += increase;
                             if (this.increaseLastUpdate >= 3600) {
                                 this.increaseLastUpdate -= 3600;

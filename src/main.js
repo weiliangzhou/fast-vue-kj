@@ -8,9 +8,6 @@ import { shareMixin } from "./global/utils/wxShare";
 import "lib-flexible";
 // import fastclick from 'fastclick'
 import { shouldLoginMixin } from "./mixins";
-import store from "./store/index";
-import "./filters";
-import "./directives";
 import "mint-ui/lib/style.css";
 import "./assets/style/cover-style.css";
 import "./assets/style/animate.css";
@@ -45,7 +42,6 @@ Vue.config.productionTip = false;
 new Vue({
   el: "#app",
   router,
-  store,
   components: { App },
   // template: '<App/>',
   render(h) {
