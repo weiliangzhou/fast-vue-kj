@@ -1,9 +1,9 @@
 <template>
     <section id="home-view">
         <div class="top-container">
-            <div class="part1">
+            <div class="part1" >
                 <h6>实时挖矿收益</h6>
-                <p>{{btcInfo==0?"0.0000000000":btcInfo}}</p>
+                <p v-cloak>{{btcInfo==0?"0.0000000000":btcInfo}}</p>
                 <!-- <button><span>提币</span></button> -->
             </div>
             <div class="part2">
@@ -120,7 +120,7 @@
         data() {
             return {
                 iconList: ['http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190730/26dca687c89848f0a5aaca2b21e7911f.png'],
-                btcInfo: 0.0000000000,
+                btcInfo: "",
                 btcInfoDesc: "0",
                 currentEnergyExpireSecond: 0,
                 currentPower: 0,
