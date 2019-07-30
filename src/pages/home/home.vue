@@ -131,7 +131,9 @@
                 btnActive_1: true,
                 btnActive_2: false,
                 percentAge: 0,
-                cdStatus: null
+                cdStatus: null,
+                startToEndTime: '',// 长按时间的开始时间
+                timer1: '', // 长按开始的计时器
             };
         },
         computed: {
@@ -196,46 +198,50 @@
             },
             //长按事件
             onTouchStart() {
+                let time1 = new Date();
+                this.startToEndTime = time1;
                 this.btnActive_1 = false;
                 this.btnActive_2 = true;
                 this.increaseLastUpdate = 0;
                 let energyConsumeCount = 0
-                if (!this.touchStartTime) {
-                    this.stopTimeDown();
-                    this.touchStartTime = setInterval(() => {
-                        let increase = 30 + parseInt(Math.random() * 10);
-                        this.increaseLastUpdate += increase;
-                        if (this.increaseLastUpdate >= 3600) {
-                            this.increaseLastUpdate -= 3600;
-                            energyConsume(1)
-                                .then(res => {
-                                    energyConsumeCount ++
-                                })
-                                .catch(err => {
-                                    // Toast(err);
-                                     if(energyConsumeCount>0) {
-                                        Toast("充了: "+energyConsumeCount+" 小时电, 电力不足")
-                                    } else {
-                                        Toast(err)
-                                    }
-                                    this.increaseLastUpdate = 0;
-                                    this.clearTouchTask();
-                                })
-                                .then(() => {
-                                    energyInfo().then(res => {
-                                        this.currentEnergyExpireSecond = res || 0;
-                                        this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
-                                        if (this.percentAge >= 0 & this.percentAge < 20) {
-                                            this.cdStatus = "exception";
-                                        } else if (this.percentAge >= 80) {
-                                            this.cdStatus = "success";
+                this.timer1 = setTimeout(() => {
+                    if (!this.touchStartTime) {
+                        this.stopTimeDown();
+                        this.touchStartTime = setInterval(() => {
+                            let increase = 30 + parseInt(Math.random() * 10);
+                            this.increaseLastUpdate += increase;
+                            if (this.increaseLastUpdate >= 3600) {
+                                this.increaseLastUpdate -= 3600;
+                                energyConsume(1)
+                                    .then(res => {
+                                        energyConsumeCount ++
+                                    })
+                                    .catch(err => {
+                                        // Toast(err);
+                                        if(energyConsumeCount>0) {
+                                            Toast("充了: "+energyConsumeCount+" 小时电, 电力不足")
+                                        } else {
+                                            Toast(err)
                                         }
+                                        this.increaseLastUpdate = 0;
+                                        this.clearTouchTask();
+                                    })
+                                    .then(() => {
+                                        energyInfo().then(res => {
+                                            this.currentEnergyExpireSecond = res || 0;
+                                            this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
+                                            if (this.percentAge >= 0 & this.percentAge < 20) {
+                                                this.cdStatus = "exception";
+                                            } else if (this.percentAge >= 80) {
+                                                this.cdStatus = "success";
+                                            }
+                                        });
                                     });
-                                });
-                        }
-                        this.currentEnergyExpireSecond += increase;
-                    }, 20);
-                }
+                            }
+                            this.currentEnergyExpireSecond += increase;
+                        }, 20);
+                    }
+                }, 500)
             },
             clearTouchTask() {
                 clearInterval(this.touchStartTime);
@@ -244,6 +250,14 @@
             },
             // 长按松开事件
             onTouchEnd() {
+                let time2 = new Date();
+                let result = time2 - this.startToEndTime;
+                // 当按钮弹起时，如果result的时间小于500毫秒，那么清除touchstart事件触发发this.timer1
+                if(result < 500) {
+                    clearTimeout(this.timer1);
+                    Toast('请长按充电');
+                    return;
+                }
                 this.btnActive_1 = true;
                 this.btnActive_2 = false;
                 this.clearTouchTask();
@@ -443,7 +457,7 @@
 
             #jdt {
                 width: 428px;
-                margin-top: 50px;
+                margin-top: 40px;
                 margin-left: 8%;
             }
 
@@ -474,13 +488,13 @@
             .label-container {
                 div {
                     ont-family: PingFangSC-Regular;
-                    font-size: 20px;
+                    font-size: 24px;
                     color: #FFFFFF;
                     letter-spacing: 0;
                     display: flex;
                     position: absolute;
-                    top: 60%;
-                    left: 9%;
+                    top: 50%;
+                    left:  8%;
                 }
 
 
@@ -595,7 +609,7 @@
                         color: #ffffff;
                         letter-spacing: 0;
                         text-align: center;
-                        margin-top: 12px;
+                        /*margin-top: 6px;*/
                         line-height: 33px;
                         height: 33px;
                     }

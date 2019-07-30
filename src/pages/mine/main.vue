@@ -116,7 +116,7 @@ export default {
 <style lang='less' scoped>
 section[id='person-container'] {
   width: 100vw;
-  min-height: 94vh;
+  /*min-height: 94vh;*/
   flex: 1;
   box-sizing: border-box;
   background: #fff;
