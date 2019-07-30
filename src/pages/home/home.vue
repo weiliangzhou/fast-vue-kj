@@ -3,7 +3,7 @@
         <div class="top-container">
             <div class="part1">
                 <h6>实时挖矿收益</h6>
-                <p>{{btcInfo}}</p>
+                <p>{{btcInfo==0?"0.0000000000":btcInfo}}</p>
                 <!-- <button><span>提币</span></button> -->
             </div>
             <div class="part2">
@@ -121,7 +121,7 @@
         data() {
             return {
                 iconList: [yaoqing],
-                btcInfo: 0,
+                btcInfo: 0.0000000000,
                 btcInfoDesc: "0",
                 currentEnergyExpireSecond: 0,
                 currentPower: 0,
@@ -139,7 +139,7 @@
         computed: {
             bollTasks() {
                 return this.myTaskInfoList.filter(
-                    item => item.type == 3 || !item.complete
+                    item =>  !item.complete
                 );
             },
             TimeFormatHour() {
@@ -208,7 +208,7 @@
                     if (!this.touchStartTime) {
                         this.stopTimeDown();
                         this.touchStartTime = setInterval(() => {
-                            let increase = 30 + parseInt(Math.random() * 10);
+                            let increase = 60 + parseInt(Math.random() * 10);
                             this.increaseLastUpdate += increase;
                             if (this.increaseLastUpdate >= 3600) {
                                 this.increaseLastUpdate -= 3600;
@@ -298,21 +298,23 @@
                 let currentTask = this.myTaskInfoList.findIndex(
                     item => item.id == taskId
                 );
+                completeTask(taskId).then(res => {
+                    this.myTaskInfoList[currentTask].complete = true;
+                    this.myTaskInfoList[currentTask].btnName = "已完成";
+                    if (this.myTaskInfoList[currentTask].hours) {
+                        this.showToast1("电力+" + this.myTaskInfoList[currentTask].hours);
+                    }
+
+                });
                 if (currentTask !== -1 && this.myTaskInfoList[currentTask].hrefUrl) {
                     location.href = this.myTaskInfoList[currentTask].hrefUrl;
-                } else if (
-                    currentTask !== -1 &&
-                    this.myTaskInfoList[currentTask].complete == false
-                ) {
-                    completeTask(taskId).then(res => {
-                        this.myTaskInfoList[currentTask].complete = true;
-                        this.myTaskInfoList[currentTask].btnName = "已完成";
-                        if (this.myTaskInfoList[currentTask].hours) {
-                            this.showToast1("电力+" + this.myTaskInfoList[currentTask].hours);
-                        }
-
-                    });
                 }
+                // else if (
+                //     currentTask !== -1 &&
+                //     this.myTaskInfoList[currentTask].complete == false
+                // ) {
+                //
+                // }
             },
             startTimeDown() {
                 if (!this.btcInfoTime && this.currentEnergyExpireSecond > 0) {
