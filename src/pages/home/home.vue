@@ -28,8 +28,9 @@
 
             <div class="part3">
                 <div id="jdt">
-                    <el-progress :text-inside="true" :stroke-width="18" :percentage="percentAge"
-                                 v-bind:status="cdStatus"></el-progress>
+                    <mt-progress  :value="percentAge" :bar-height="18">
+                        <div slot="end" style="color: white;font-size: 12px">&nbsp;{{percentAge}}%</div>
+                    </mt-progress>
                 </div>
                 <div class="label-container">
                     <div>
@@ -114,16 +115,12 @@
 <script>
     import {Toast} from "@/global";
     import {completeTask, energyConsume, energyInfo, homepageInfo} from "@/api";
-    import fenxiang from "./icon_fenxiang.png";
-    import qiandao from "./icon_qiandao.png";
     import yaoqing from "./icon_yaoqing.png";
-    import zhuce from "./icon_zhuce.png";
-    import xiazai from "./icon_xiazai.png";
 
     export default {
         data() {
             return {
-                iconList: [yaoqing, zhuce, xiazai, qiandao, fenxiang],
+                iconList: [yaoqing],
                 btcInfo: 0,
                 btcInfoDesc: "0",
                 currentEnergyExpireSecond: 0,
@@ -162,7 +159,7 @@
         },
         mounted() {
             homepageInfo().then(({myTaskInfoList, ...others}) => {
-                let colors = ["#00C0AC", "#FF461A", "#FFB400", "#6868E7"];
+                let colors = ["#FFB400", "#00C0AC", "#FF461A", "#6868E7"];
                 let pos = ["fenxiang-pos", "yaoqing-pos", "qiandao-pos", "renwu-pos"];
                 myTaskInfoList = myTaskInfoList.map((item, index) => {
                     item["color"] = colors[index % 4];
@@ -197,10 +194,8 @@
                     document.body.removeChild(container);
                 }, 1500);
             },
-            //点击事件
-            //松开事件
+            //长按事件
             onTouchStart() {
-                // debugger;
                 this.btnActive_1 = false;
                 this.btnActive_2 = true;
                 this.increaseLastUpdate = 0;
@@ -356,9 +351,9 @@
 
     .top-container {
         margin-bottom: 20px;
-        padding: 30px 30px 0;
+        padding: 50px 30px 0;
         width: 100%;
-        height: 1100px;
+        height: 1108px;
         box-sizing: border-box;
         overflow: hidden;
         background: rgba(146, 146, 146, 0.5);
@@ -439,8 +434,6 @@
 
         .part3 {
             display: flex;
-            /*justify-content: center;*/
-            /*align-items: center;*/
             position: relative;
             background: rgba(0, 0, 0, 0.30);
             border-radius: 20px;
@@ -450,12 +443,11 @@
 
             #jdt {
                 width: 428px;
-                margin-top: 55px;
+                margin-top: 50px;
                 margin-left: 8%;
             }
 
             #cd_btn_div {
-
                 display: flex;
                 position: absolute;
                 margin-top: 35px;
@@ -482,13 +474,13 @@
             .label-container {
                 div {
                     ont-family: PingFangSC-Regular;
-                    font-size: 24px;
+                    font-size: 20px;
                     color: #FFFFFF;
                     letter-spacing: 0;
                     display: flex;
                     position: absolute;
                     top: 60%;
-                    left: 8%;
+                    left: 9%;
                 }
 
 
@@ -693,7 +685,7 @@
 
             li {
                 height: 200px;
-                background: #ffb400;
+                background: #FF3043;
                 box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.1);
                 border-radius: 16px;
                 display: flex;
@@ -829,42 +821,42 @@
   cursor: pointer;
 }
 .animate0 {
-  animation-delay: 0.1s;
-  animation-duration: 0.8s;
+    animation-delay: 3s;
+    animation-duration: 5s;
 }
 .animate1 {
-  animation-delay: 0.5s;
-  animation-duration: 1s;
+    animation-delay: 3s;
+    animation-duration: 5s;
 }
 
 .animate2 {
-  animation-delay: 0.3s;
-  animation-duration: 0.9s;
+    animation-delay: 3s;
+    animation-duration: 5s;
 }
 
 .animate3 {
-  animation-delay: 0.7s;
-  animation-duration: 1.1s;
+    animation-delay: 3s;
+    animation-duration: 5s;
 }
 
 .animate4 {
-  animation-delay: 0.9s;
-  animation-duration: 1.3s;
+    animation-delay: 3s;
+    animation-duration: 5s;
 }
 
 .animate5 {
-  animation-delay: 0.6s;
-  animation-duration: 1.5s;
+    animation-delay: 3s;
+    animation-duration: 5s;
 }
 
 .animate6 {
-  animation-delay: 0.2s;
-  animation-duration: 1.1s;
+    animation-delay: 3s;
+    animation-duration: 5s;
 }
 
 .animate7 {
-  animation-delay: 0.8s;
-  animation: duration 1.2s;
+    animation-delay: 3s;
+    animation-duration: 5s;
 }
 </style>
 <style lang='less'>

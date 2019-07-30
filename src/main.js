@@ -18,19 +18,16 @@ import router from "./router";
 import promise from "es6-promise";
 import "./registerServiceWorker";
 import "./components";
-import Qrcode from "vux/src/components/qrcode";
 import "./iconfont";
+import { Progress } from 'mint-ui';
+import '../static/css/mint-ui.scss'
 promise.polyfill();
 Vue.use(InfiniteScroll);
-// Vue.use(MintUI)
+Vue.component(Progress.name, Progress);
 Vue.mixin(shouldLoginMixin); // 混入微信config注册与微信分享初始化
 Vue.mixin(shareMixin);
 Vue.use(Vuex);
 Vue.config.productionTip = false;
-Vue.component(Qrcode.name, Qrcode);
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(ElementUI)
 // fastclick.attach(document.body) // 防止用户在手机端的点击穿透
 // localStorage.userInfo = JSON.stringify({
 //   token: "01f74d291940425095cfe01820aa1757",
@@ -60,7 +57,7 @@ if (process.env.NODE_ENV !== "production") {
   /* eslint-disable no-new */
   Promise.resolve(require("vconsole")).then(VConsole => new VConsole());
 }
-localStorage.userInfo=JSON.stringify({
-    id:58,
-    token:"4d13fbc5df4c4e149b4c6cdead106604"
-})
+// localStorage.userInfo=JSON.stringify({
+//     id:58,
+//     token:"4d13fbc5df4c4e149b4c6cdead106604"
+// })

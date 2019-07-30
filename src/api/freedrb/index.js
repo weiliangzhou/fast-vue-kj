@@ -43,7 +43,7 @@ const cachePromise = (
 
 // 用户登录
 export const login = ({ code, referUid }) => {
-  debugger;
+  // debugger;
   return axios.request({
     url: "/api/pub/login",
     method: "get",

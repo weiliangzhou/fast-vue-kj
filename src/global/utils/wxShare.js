@@ -188,7 +188,6 @@ export const shareMixin = {
       } // 对于指定的页面去取异步分享数据来替换默认的异步
       Promise.all([shareData, getWXConfigPromise()]).then(
         ([shareRes, shareIsShow]) => {
-          debugger;
           wxShare({ ...shareRes, link });
         }
       );
