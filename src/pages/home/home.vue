@@ -133,6 +133,7 @@
                 cdStatus: null,
                 startToEndTime: '',// 长按时间的开始时间
                 timer1: '', // 长按开始的计时器
+                energyConsumeCount:0//消耗电力值
             };
         },
         computed: {
@@ -169,29 +170,23 @@
                 Object.assign(this, {myTaskInfoList, ...others});
                 this.startTimeDown();
                 this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
-                if (this.percentAge >= 0 & this.percentAge < 20) {
-                    this.cdStatus = "exception";
-                } else if (this.percentAge >= 20 & this.percentAge < 80) {
-                    this.cdStatus = null;
-                } else if (this.percentAge >= 80) {
-                    this.cdStatus = "success";
-                }
+
             });
         },
         methods: {
-            showToast1(text) {
-                let container = document.createElement("section");
-                container.setAttribute("class", "toast1");
-                let span = document.createElement("span");
-                span.innerText = text;
-                let div = document.createElement("div");
-                div.appendChild(span);
-                container.appendChild(div);
-                document.body.appendChild(container);
-                setTimeout(() => {
-                    // debugger;
-                    document.body.removeChild(container);
-                }, 1500);
+            successToastDL(text) {
+              Toast(text,{
+                    position:'middle',
+                    duration:2000,
+                    iconClass:"successToastDL"
+                });
+            },
+            successToast(msg){
+                Toast(msg,{
+                    position:'middle',
+                    duration:2000,
+                    iconClass:"successToast"
+                });
             },
             //长按事件
             onTouchStart() {
@@ -199,39 +194,33 @@
                 this.startToEndTime = time1;
                 this.btnActive_1 = false;
                 this.btnActive_2 = true;
-                this.increaseLastUpdate = 0;
-                let energyConsumeCount = 0
+                let increaseLastUpdate = 0;
                 this.timer1 = setTimeout(() => {
                     if (!this.touchStartTime) {
                         this.stopTimeDown();
                         this.touchStartTime = setInterval(() => {
                             let increase = 3 * 60 + parseInt(Math.random() * 10);
-                            this.increaseLastUpdate += increase;
-                            if (this.increaseLastUpdate >= 3600) {
-                                this.increaseLastUpdate -= 3600;
+                            increaseLastUpdate += increase;
+                            if (increaseLastUpdate >= 3600) {
+                                increaseLastUpdate -= 3600;
                                 energyConsume(1)
                                     .then(res => {
-                                        energyConsumeCount++
+                                        this.energyConsumeCount++
                                     })
                                     .catch(err => {
-                                        // Toast(err);
-                                        if (energyConsumeCount > 0) {
-                                            Toast("充了: " + energyConsumeCount + " 小时电, 电力不足")
-                                        } else {
-                                            Toast(err)
+                                        increaseLastUpdate = 0;
+                                        if ( this.energyConsumeCount > 0) {
+                                            this.successToast("充电: " +  this.energyConsumeCount + "小时")
+                                        }else{
+                                            Toast(err);
                                         }
-                                        this.increaseLastUpdate = 0;
+                                        this.energyConsumeCount=0;
                                         this.clearTouchTask();
                                     })
                                     .then(() => {
                                         energyInfo().then(res => {
                                             this.currentEnergyExpireSecond = res || 0;
                                             this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
-                                            if (this.percentAge >= 0 & this.percentAge < 20) {
-                                                this.cdStatus = "exception";
-                                            } else if (this.percentAge >= 80) {
-                                                this.cdStatus = "success";
-                                            }
                                         });
                                     });
                             }
@@ -258,60 +247,60 @@
                 this.btnActive_1 = true;
                 this.btnActive_2 = false;
                 this.clearTouchTask();
-                let energyConsumeCount = Math.ceil(energyConsumeCount / 3600)
-                if (this.increaseLastUpdate % 3600) {
-                    this.increaseLastUpdate = 0;
-                    energyConsume(1)
-                        .then(res => {
-                            if (energyConsumeCount > 0) {
-                                Toast("充了: " + energyConsumeCount + " 小时电")
-                            }
-                        })
-                        .catch(err => {
-                            Toast(err);
-                            this.clearTouchTask();
-                            if (--energyConsumeCount > 0) {
-                                Toast("充了: " + energyConsumeCount + " 小时电")
-                            }
-                        })
-                        .then(res => {
-                            energyInfo().then(res => {
-                                this.currentEnergyExpireSecond = res || 0;
-                                this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
-                                if (this.percentAge >= 0 & this.percentAge < 20) {
-                                    this.cdStatus = "exception";
-                                } else if (this.percentAge >= 80) {
-                                    this.cdStatus = "success";
-                                }
-                            });
-                        });
-                } else {
-                    if (energyConsumeCount > 0) {
-                        Toast("充了: " + energyConsumeCount + " 小时电")
-                    }
-                }
+                energyInfo().then(res => {
+                    this.currentEnergyExpireSecond = res || 0;
+                    this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
+                });
             },
             completeTask(taskId) {
                 let currentTask = this.myTaskInfoList.findIndex(
                     item => item.id == taskId
                 );
-                completeTask(taskId).then(res => {
-                    this.myTaskInfoList[currentTask].complete = true;
-                    this.myTaskInfoList[currentTask].btnName = "已完成";
-                    if (this.myTaskInfoList[currentTask].hours) {
-                        this.showToast1("电力+" + this.myTaskInfoList[currentTask].hours);
-                    }
+                let taskType =this.myTaskInfoList[currentTask].type;
+                if (taskType ===3) {
+                    completeTask(taskId).then(res => {
+                        this.myTaskInfoList[currentTask].complete = true;
+                        this.myTaskInfoList[currentTask].btnName = "已完成";
+                        if (this.myTaskInfoList[currentTask].hours) {
+                            this.successToastDL("电力+" + this.myTaskInfoList[currentTask].hours);
+                        }
 
-                });
-                if (currentTask !== -1 && this.myTaskInfoList[currentTask].hrefUrl) {
+                    });
                     location.href = this.myTaskInfoList[currentTask].hrefUrl;
+                }else if (taskType ===1){
+                    completeTask(taskId).then(res => {
+                        this.myTaskInfoList[currentTask].complete = true;
+                        this.myTaskInfoList[currentTask].btnName = "已完成";
+                        if (this.myTaskInfoList[currentTask].hours) {
+                            this.successToastDL("电力+" + this.myTaskInfoList[currentTask].hours);
+                        }
+
+                    });
+
+                }else if (taskType ===2){
+                if(taskId===4){
+                    this.showShare();
+                    setTimeout(()=>{
+                        completeTask(taskId).then(res => {
+                            this.myTaskInfoList[currentTask].complete = true;
+                            this.myTaskInfoList[currentTask].btnName = "已完成";
+                            if (this.myTaskInfoList[currentTask].hours) {
+                                this.successToastDL("电力+" + this.myTaskInfoList[currentTask].hours);
+                            }
+
+                        });
+                    },5000)
+                }else {
+                    completeTask(taskId).then(res => {
+                        this.myTaskInfoList[currentTask].complete = true;
+                        this.myTaskInfoList[currentTask].btnName = "已完成";
+                        if (this.myTaskInfoList[currentTask].hours) {
+                            this.successToastDL("电力+" + this.myTaskInfoList[currentTask].hours);
+                        }
+
+                    });
                 }
-                // else if (
-                //     currentTask !== -1 &&
-                //     this.myTaskInfoList[currentTask].complete == false
-                // ) {
-                //
-                // }
+                }
             },
             startTimeDown() {
                 if (!this.btcInfoTime && this.currentEnergyExpireSecond > 0) {
@@ -686,6 +675,8 @@
                         letter-spacing: 0;
                         height: 32px;
                         line-height: 30px;
+                        word-wrap:break-word;
+                        width:220px;
                     }
                 }
 
@@ -876,38 +867,19 @@
     }
 </style>
 <style lang='less'>
-    .toast1 {
-        position: fixed;
-        z-index: 10;
-        top: 0;
-        right: 0;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .successToastDL{
+        width: 120px;
+        height: 120px;
+        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/479b54150fbb45c1ae2f82df462a2d47.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
 
-        div {
-            width: 200px;
-            height: 190px;
-            border-radius: 20px;
-            background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190730/f851e6ad2a8740218f8b37b0e8c0f6fb.png');
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-
-            span {
-                font-family: PingFangSC-Medium;
-                font-size: 28px;
-                color: #2cd781;
-                letter-spacing: 0;
-                text-align: justify;
-                height: 40px;
-                line-height: 40px;
-                margin-bottom: 28px;
-            }
-        }
+    .successToast{
+        width: 120px;
+        height: 120px;
+        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/58aabf6f0c034661a00ac3284c3089f6.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
     }
 </style>
