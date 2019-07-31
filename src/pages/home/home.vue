@@ -195,6 +195,13 @@
                     iconClass:"failToast"
                 });
             },
+            fullEnergyToast(msg){
+                Toast(msg,{
+                    position:'middle',
+                    duration:200,
+                    iconClass:"fullEnergyToast"
+                });
+            },
             //长按事件
             onTouchStart() {
                 let time1 = new Date();
@@ -259,7 +266,12 @@
                             this.successToast("充了" + finalHours + "小时");
                     })
                     .catch(err => {
-                        this.failToast(err);
+                        console.log(err);
+                        // if(err.msg.indexOf('充沛')>0){
+                        //     this.fullEnergyToast(err);
+                        // }else{
+                        this.fullEnergyToast(err);
+                        // }
                         this.clearTouchTask();
                     })
                     .then(res => {
@@ -902,16 +914,23 @@
     .successToast{
         width: 120px;
         height: 120px;
-        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/58aabf6f0c034661a00ac3284c3089f6.png');
+        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/ffbc292e25b44e778bbed16c2a0b1921.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }
     .failToast{
         width: 120px;
         height: 120px;
-        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/ab7d7274bc9343b1b482fe7737f78c7e.png');
+        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/42c116d75810449180056c95f3999c16.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
 
+    }
+    .fullEnergyToast{
+        width: 120px;
+        height: 120px;
+        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/ee55f7cf22b64ce1b47ed1578175b536.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
     }
 </style>
