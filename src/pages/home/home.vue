@@ -267,11 +267,11 @@
                     })
                     .catch(err => {
                         console.log(err);
-                        // if(err.msg.indexOf('充沛')>0){
-                        //     this.fullEnergyToast(err);
-                        // }else{
-                        this.fullEnergyToast(err);
-                        // }
+                        if(err.message.indexOf('充沛')>0){
+                            this.fullEnergyToast(err);
+                        }else{
+                        this.failToast(err);
+                        }
                         this.clearTouchTask();
                     })
                     .then(res => {
