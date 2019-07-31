@@ -43,7 +43,7 @@ export const Toast = (
   msg = "",
   {
     position = "middle",
-    doration = 2000,
+    doration = 200,
     className = undefined,
     iconClass = undefined
   } = {}
@@ -71,7 +71,7 @@ export const ToastPromise = (
   msg = "",
   {
     position = "middle",
-    doration = 2000,
+    doration = 200,
     className = undefined,
     iconClass = undefined
   } = {}

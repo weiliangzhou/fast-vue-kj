@@ -133,7 +133,7 @@
                 cdStatus: null,
                 startToEndTime: '',// 长按时间的开始时间
                 timer1: '', // 长按开始的计时器
-                energyConsumeCount:0//消耗电力值
+                currentEnergyHours:0//当前剩余电力
             };
         },
         computed: {
@@ -177,15 +177,22 @@
             successToastDL(text) {
               Toast(text,{
                     position:'middle',
-                    duration:2000,
+                    duration:200,
                     iconClass:"successToastDL"
                 });
             },
             successToast(msg){
                 Toast(msg,{
                     position:'middle',
-                    duration:2000,
+                    duration:200,
                     iconClass:"successToast"
+                });
+            },
+            failToast(msg){
+                Toast(msg,{
+                    position:'middle',
+                    duration:200,
+                    iconClass:"failToast"
                 });
             },
             //长按事件
@@ -194,40 +201,24 @@
                 this.startToEndTime = time1;
                 this.btnActive_1 = false;
                 this.btnActive_2 = true;
-                let increaseLastUpdate = 0;
+                this.increaseLastUpdate = 0;
                 this.timer1 = setTimeout(() => {
                     if (!this.touchStartTime) {
                         this.stopTimeDown();
+                        if(this.currentEnergyHours==0){
+                            this.failToast("电力不足");
+                            return;
+                        }
                         this.touchStartTime = setInterval(() => {
-                            let increase = 3 * 60 + parseInt(Math.random() * 10);
-                            increaseLastUpdate += increase;
-                            if (increaseLastUpdate >= 3600) {
-                                increaseLastUpdate -= 3600;
-                                energyConsume(1)
-                                    .then(res => {
-                                        this.energyConsumeCount++
-                                    })
-                                    .catch(err => {
-                                        increaseLastUpdate = 0;
-                                        if ( this.energyConsumeCount > 0) {
-                                            this.successToast("充电: " +  this.energyConsumeCount + "小时")
-                                        }else{
-                                            Toast(err);
-                                        }
-                                        this.energyConsumeCount=0;
-                                        this.clearTouchTask();
-                                    })
-                                    .then(() => {
-                                        energyInfo().then(res => {
-                                            this.currentEnergyExpireSecond = res || 0;
-                                            this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
-                                        });
-                                    });
-                            }
-                            this.currentEnergyExpireSecond += increase;
+                            let increase =  3*60 + parseInt(Math.random() * 10);
+                            this.increaseLastUpdate += increase;
+                            this.currentEnergyExpireSecond +=increase;
+                            //this.currentEnergyExpireSecond 不能大于24*3600
+                            this.currentEnergyExpireSecond = this.currentEnergyExpireSecond > 24*3600  ? 24*3600 :this.currentEnergyExpireSecond;
+                            this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
                         }, 20);
                     }
-                }, 500)
+                }, 200)
             },
             clearTouchTask() {
                 clearInterval(this.touchStartTime);
@@ -236,6 +227,8 @@
             },
             // 长按松开事件
             onTouchEnd() {
+                this.btnActive_1 = true;
+                this.btnActive_2 = false;
                 let time2 = new Date();
                 let result = time2 - this.startToEndTime;
                 // 当按钮弹起时，如果result的时间小于500毫秒，那么清除touchstart事件触发发this.timer1
@@ -244,13 +237,38 @@
                     Toast('请长按充电');
                     return;
                 }
-                this.btnActive_1 = true;
-                this.btnActive_2 = false;
+                let finalHours= Math.floor(this.increaseLastUpdate/3600);
                 this.clearTouchTask();
-                energyInfo().then(res => {
-                    this.currentEnergyExpireSecond = res || 0;
-                    this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
-                });
+                if(this.increaseLastUpdate%3600){
+                    finalHours++;
+                }
+               console.log(finalHours);
+                if(finalHours> this.currentEnergyHours){
+                    finalHours =this.currentEnergyHours;
+                }
+                if(finalHours==0){
+                    this.failToast("电力不足");
+                    energyInfo().then(res => {
+                        this.currentEnergyExpireSecond = res || 0;
+                        this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
+                    });
+                    return;
+                }
+                energyConsume(finalHours)
+                    .then(res => {
+                            this.successToast("充了" + finalHours + "小时");
+                    })
+                    .catch(err => {
+                        this.failToast(err);
+                        this.clearTouchTask();
+                    })
+                    .then(res => {
+                        energyInfo().then(res => {
+                            this.currentEnergyExpireSecond = res || 0;
+                            this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
+                        });
+                    });
+
             },
             completeTask(taskId) {
                 let currentTask = this.myTaskInfoList.findIndex(
@@ -263,6 +281,7 @@
                         this.myTaskInfoList[currentTask].btnName = "已完成";
                         if (this.myTaskInfoList[currentTask].hours) {
                             this.successToastDL("电力+" + this.myTaskInfoList[currentTask].hours);
+                            this.currentEnergyHours +=this.myTaskInfoList[currentTask].hours;
                         }
 
                     });
@@ -273,6 +292,7 @@
                         this.myTaskInfoList[currentTask].btnName = "已完成";
                         if (this.myTaskInfoList[currentTask].hours) {
                             this.successToastDL("电力+" + this.myTaskInfoList[currentTask].hours);
+                            this.currentEnergyHours +=this.myTaskInfoList[currentTask].hours;
                         }
 
                     });
@@ -286,6 +306,7 @@
                             this.myTaskInfoList[currentTask].btnName = "已完成";
                             if (this.myTaskInfoList[currentTask].hours) {
                                 this.successToastDL("电力+" + this.myTaskInfoList[currentTask].hours);
+                                this.currentEnergyHours +=this.myTaskInfoList[currentTask].hours;
                             }
 
                         });
@@ -296,6 +317,7 @@
                         this.myTaskInfoList[currentTask].btnName = "已完成";
                         if (this.myTaskInfoList[currentTask].hours) {
                             this.successToastDL("电力+" + this.myTaskInfoList[currentTask].hours);
+                            this.currentEnergyHours +=this.myTaskInfoList[currentTask].hours;
                         }
 
                     });
@@ -627,6 +649,7 @@
                 }
 
                 span {
+
                     font-family: PingFangSC-Medium;
                     font-size: 28px;
                     color: #009cff;
@@ -638,8 +661,8 @@
 
             li {
                 height: 200px;
-                background: #ff3043;
-                box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.1);
+                background: #FF3043;
+                box-shadow: 0 8px 0 0 rgba(0,0,0,0.10);
                 border-radius: 16px;
                 display: flex;
                 align-items: center;
@@ -660,39 +683,40 @@
                     margin-right: 20px;
 
                     h6 {
-                        height: 37px;
                         font-family: PingFangSC-Medium;
-                        font-size: 26px;
-                        color: #ffffff;
+                        font-size: 30px;
+                        color: #FFFFFF;
                         letter-spacing: 0;
-                        line-height: 37px;
+                        height: 40px;
+                        line-height: 40px;
                     }
 
                     p {
                         font-family: PingFangSC-Regular;
                         font-size: 22px;
-                        color: #ffffff;
+                        color: #FFFFFF;
                         letter-spacing: 0;
-                        height: 32px;
-                        line-height: 30px;
+                        line-height: 26px;
                         word-wrap:break-word;
-                        width:220px;
+                        width: 220px;
+                        height: 52px;
+
                     }
                 }
 
                 button {
-                    background: #ffffff;
-                    border-radius: 20px;
+                    background: #FFFFFF;
+                    border-radius: 28px;
                     padding: 6px 34px;
                     border: none;
-
+                    height: 56px;
                     span {
-                        font-family: PingFangSC-Regular;
-                        font-size: 22px;
-                        color: #ffb400;
+                        font-family: PingFangSC-Medium;
+                        font-size: 24px;
+                        color: #FF3043;
                         letter-spacing: 0;
-                        height: 30px;
-                        line-height: 30px;
+                        height: 33px;
+                        line-height: 33px;
                         font-weight: 600;
                     }
                 }
@@ -779,8 +803,8 @@
     }
 
     .animate0 {
-        animation-delay: 0.2s;
-        animation-duration: 0.8s;
+        animation-delay: 3s;
+        animation-duration:5s;
         left: 46px;
         top: 5px;
 
@@ -790,8 +814,8 @@
     }
 
     .animate1 {
-        animation-delay: 0.5s;
-        animation-duration: 1s;
+        animation-delay: 3s;
+        animation-duration:5s;
         top: 36px;
         right: 30px;
 
@@ -801,8 +825,8 @@
     }
 
     .animate2 {
-        animation-delay: 0.3s;
-        animation-duration: 0.9s;
+        animation-delay: 3s;
+        animation-duration:5s;
         right: 53px;
         bottom: 11px;
 
@@ -812,8 +836,8 @@
     }
 
     .animate3 {
-        animation-delay: 0.7s;
-        animation-duration: 1.1s;
+        animation-delay: 3s;
+        animation-duration:5s;
         left: 40px;
         bottom: 40px;
 
@@ -823,8 +847,8 @@
     }
 
     .animate4 {
-        animation-delay: 0.9s;
-        animation-duration: 1.3s;
+        animation-delay: 3s;
+        animation-duration:5s;
         right: 293px;
         bottom: 111px;
 
@@ -834,8 +858,8 @@
     }
 
     .animate5 {
-        animation-delay: 0.6s;
-        animation-duration: 1.5s;
+        animation-delay: 3s;
+        animation-duration:5s;
         right: 83px;
         bottom: 150px;
 
@@ -845,8 +869,8 @@
     }
 
     .animate6 {
-        animation-delay: 0.2s;
-        animation-duration: 1.1s;
+        animation-delay: 3s;
+        animation-duration:5s;
         top: 100px;
         right: 200px;
 
@@ -856,8 +880,8 @@
     }
 
     .animate7 {
-        animation-delay: 0.8s;
-        animation-duration: 1.2s;
+        animation-delay: 3s;
+        animation-duration:5s;
         left: 20px;
         top: 160px;
 
@@ -881,5 +905,13 @@
         background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/58aabf6f0c034661a00ac3284c3089f6.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
+    }
+    .failToast{
+        width: 120px;
+        height: 120px;
+        background: url('http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190731/ab7d7274bc9343b1b482fe7737f78c7e.png');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+
     }
 </style>
