@@ -89,7 +89,7 @@
                         <h6>{{item.title}}</h6>
                         <p>{{item.desc}}</p>
                     </div>
-                    <button @click="completeTask(item.id)"><span :style="{
+                    <button @click="completeTask(item.id)" v-bind:disabled="item.complete"><span :style="{
             color: item.color
           }">{{item.btnName}}</span></button>
                 </li>
