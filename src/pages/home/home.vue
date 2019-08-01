@@ -206,6 +206,8 @@
                 this.btnActive_1 = false;
                 this.btnActive_2 = true;
                 this.increaseLastUpdate = 0;
+                let currentHours = this.currentEnergyHours;
+                let currentSeconds=this.currentEnergyExpireSecond;
                 this.timer1 = setTimeout(() => {
                     if (!this.touchStartTime) {
                         this.stopTimeDown();
@@ -215,15 +217,17 @@
                         }
                         this.touchStartTime = setInterval(() => {
                             let increase = 3 * 60 + parseInt(Math.random() * 10);
+                            //用于松开事件
                             this.increaseLastUpdate += increase;
+                            //用于计时器
                             this.currentEnergyExpireSecond += increase;
-                            this.currentEnergyExpireSecond = this.currentEnergyExpireSecond > this.currentEnergyHours * 3600 ? this.currentEnergyHours * 3600 : this.currentEnergyExpireSecond;
+                            //需要做一个边界值限制
+                            //24小时 剩余可用小时
+                            this.currentEnergyExpireSecond = this.increaseLastUpdate > currentHours * 3600 ? currentSeconds+currentHours * 3600 : this.currentEnergyExpireSecond;
+                            this.currentEnergyExpireSecond = this.currentEnergyExpireSecond > 24 * 3600 ? 24 * 3600 : this.currentEnergyExpireSecond;
+                            //用于计时器
+                            this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
 
-                            //当前剩余的currentEnergyHours
-                            let finalSecond = this.increaseLastUpdate > this.currentEnergyHours * 3600 ? this.currentEnergyHours * 3600 : this.increaseLastUpdate
-                            finalSecond = this.currentEnergyExpireSecond != 0 ? (finalSecond + this.currentEnergyExpireSecond) : finalSecond;
-                            finalSecond = finalSecond > 24 * 3600 ? 24 * 3600 : finalSecond;
-                            this.percentAge = Math.floor(finalSecond / (24 * 36));
                         }, 20);
                     }
                 }, 200)
