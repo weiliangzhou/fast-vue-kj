@@ -216,6 +216,9 @@
                         this.touchStartTime = setInterval(() => {
                             let increase = 3 * 60 + parseInt(Math.random() * 10);
                             this.increaseLastUpdate += increase;
+                            this.currentEnergyExpireSecond += increase;
+                            this.currentEnergyExpireSecond = this.currentEnergyExpireSecond > this.currentEnergyHours * 3600 ? this.currentEnergyHours * 3600 : this.currentEnergyExpireSecond;
+
                             //当前剩余的currentEnergyHours
                             let finalSecond = this.increaseLastUpdate > this.currentEnergyHours * 3600 ? this.currentEnergyHours * 3600 : this.increaseLastUpdate
                             finalSecond = this.currentEnergyExpireSecond != 0 ? (finalSecond + this.currentEnergyExpireSecond) : finalSecond;
