@@ -216,11 +216,11 @@
                         this.touchStartTime = setInterval(() => {
                             let increase = 3 * 60 + parseInt(Math.random() * 10);
                             this.increaseLastUpdate += increase;
-                            this.currentEnergyExpireSecond += increase;
-                            let currentEnergySecond = this.currentEnergyHours * 3600 > 24 * 3600 ? 24 * 3600 : this.currentEnergyHours * 3600;
-                            //this.currentEnergyExpireSecond 不能大于24*3600
-                            this.currentEnergyExpireSecond = this.currentEnergyExpireSecond > currentEnergySecond ? currentEnergySecond : this.currentEnergyExpireSecond;
-                            this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
+                            //当前剩余的currentEnergyHours
+                            let finalSecond = this.increaseLastUpdate > this.currentEnergyHours * 3600 ? this.currentEnergyHours * 3600 : this.increaseLastUpdate
+                            finalSecond = this.currentEnergyExpireSecond != 0 ? (finalSecond + this.currentEnergyExpireSecond) : finalSecond;
+                            finalSecond = finalSecond > 24 * 3600 ? 24 * 3600 : finalSecond;
+                            this.percentAge = Math.floor(finalSecond / (24 * 36));
                         }, 20);
                     }
                 }, 200)
@@ -247,20 +247,20 @@
                 if (this.increaseLastUpdate % 3600) {
                     finalHours++;
                 }
-                console.log(finalHours);
                 if (finalHours > this.currentEnergyHours) {
                     finalHours = this.currentEnergyHours;
                 }
                 if (finalHours == 0) {
                     this.failToast("电力不足");
-                    energyInfo().then(res => {
-                        this.currentEnergyExpireSecond = res || 0;
-                        this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
-                    });
+                    // energyInfo().then(res => {
+                    //     this.currentEnergyExpireSecond = res || 0;
+                    //     this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
+                    // });
                     return;
                 }
                 energyConsume(finalHours)
                     .then(res => {
+                        this.currentEnergyHours -= finalHours;
                         this.successToast("充了" + finalHours + "小时");
                     })
                     .catch(err => {

@@ -304,8 +304,8 @@
     }
 
     .no-data {
-        width: 446px;
-        height: 448px;
+        width: 128px;
+        height: 160px;
         background-repeat: no-repeat;
         background-size: 100% 100%;
         margin: auto;
