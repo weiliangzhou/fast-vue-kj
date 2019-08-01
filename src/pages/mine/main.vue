@@ -56,14 +56,14 @@
         <span></span>
       </li>
       <div style="flex: 1"></div>
-      <p class="tips">客服电话：0571-62888888</p>
+<!--      <p class="tips">客服电话：0571-62888888</p>-->
     </ul>
 
     <transition enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
 
       <section v-if="subscribeImgIsShow" class="dialogs">
         <div class="referrer-container">
-          <img :src="subscribeImg" alt="">
+          <img src="http://fast-mining.oss-cn-hangzhou.aliyuncs.com/upload/image/20190801/29682da1c8bc44b58f118cec138b95e8.png" alt="">
           <div class="button-group">
             <button class="close-button" @click="subscribeImgIsShow=false"></button>
           </div>
@@ -75,12 +75,10 @@
 
 <script>
 import { getCurrentUserInfo } from '@/api'
-import { Toast, getUserInfo, isWX, isIos } from '@/global' // resolveTimeout, rejectTimeout
-import subscribeImg from './QRcode.png'
+import { getUserInfo, isWX, isIos } from '@/global' // resolveTimeout, rejectTimeout
 export default {
   data() {
     return {
-      subscribeImg,
       subscribeImgIsShow: false,
       headImgUrl: '',
       nickName: '',
