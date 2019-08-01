@@ -38,7 +38,7 @@ export const copyTextToClipboard = text => {
 
   document.body.removeChild(textArea);
 };
-
+let currentToast = null
 export const Toast = (
   msg = "",
   {
@@ -48,8 +48,12 @@ export const Toast = (
     iconClass = undefined
   } = {}
 ) => {
+    if(currentToast) {
+        currentToast.close();
+        currentToast = null
+    }
   if (typeof msg === "string") {
-    return toast({
+      currentToast = toast({
       message: msg,
       position,
       doration,
@@ -57,7 +61,7 @@ export const Toast = (
       iconClass
     });
   } else if ([0, 1, 2, 3, 4, 5].includes(msg.level)) {
-    return toast({
+      currentToast = toast({
       message: msg.message,
       position,
       doration,
@@ -65,6 +69,7 @@ export const Toast = (
       iconClass
     });
   }
+  return currentToast
 };
 
 export const ToastPromise = (
