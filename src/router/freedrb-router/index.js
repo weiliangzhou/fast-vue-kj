@@ -9,7 +9,7 @@ export default [
     path: "/extract",
     name: "extract",
     meta: {
-      title: "总资产(btc)"
+      title: "可提现(btc)"
     },
     component: {
       render(h) {

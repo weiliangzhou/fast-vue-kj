@@ -1,8 +1,8 @@
 <template>
   <li>
     <div>
-      <h5 class="ellipsis_1"><span>提币数量</span><span>0.00000294 btc</span></h5>
-      <p>2019-06-27 23:34:56</p>
+      <h5 class="ellipsis_1"><span>提币数量</span><span>{{item.moneyDesc}}</span></h5>
+      <p>{{item.createTime}}</p>
     </div>
     <button><span>查询结果</span></button>
   </li>

@@ -2,8 +2,10 @@
 <template>
     <section id="withdraw-page">
         <div class="top-bar-container">
-            <button @click="regularTipsIsShow=true"><span>?</span></button>
-            <h4>{{value}}</h4>
+            <!--            <button @click="regularTipsIsShow=true"><span>?</span></button>-->
+            <span v-if="type == 'extract'">  <h4> {{value.length>3?value.slice(0,-2):value}} </h4></span>
+            <span v-else-if="type == 'energy'"> <h4> {{value}}</h4></span>
+            <span v-else> <h4> {{value}}GH/S</h4></span>
             <p>{{typeLabel}}</p>
         </div>
         <div class="list-container">
