@@ -3,7 +3,7 @@
         <div class="top-container">
             <div class="part1">
                 <h6>实时挖矿收益</h6>
-                <p v-cloak>{{btcInfo==0?"0.0000000000":numberToFixed(btcInfo)}}</p>
+                <p v-cloak>{{btcInfoDesc==0?"0.0000000000":numberToFixed(btcInfoDesc)}}</p>
                 <!-- <button><span>提币</span></button> -->
             </div>
             <div class="part2">
@@ -207,7 +207,7 @@
                 this.btnActive_2 = true;
                 this.increaseLastUpdate = 0;
                 let currentHours = this.currentEnergyHours;
-                let currentSeconds=this.currentEnergyExpireSecond;
+                let currentSeconds = this.currentEnergyExpireSecond;
                 this.timer1 = setTimeout(() => {
                     if (!this.touchStartTime) {
                         this.stopTimeDown();
@@ -223,7 +223,7 @@
                             this.currentEnergyExpireSecond += increase;
                             //需要做一个边界值限制
                             //24小时 剩余可用小时
-                            this.currentEnergyExpireSecond = this.increaseLastUpdate > currentHours * 3600 ? currentSeconds+currentHours * 3600 : this.currentEnergyExpireSecond;
+                            this.currentEnergyExpireSecond = this.increaseLastUpdate > currentHours * 3600 ? currentSeconds + currentHours * 3600 : this.currentEnergyExpireSecond;
                             this.currentEnergyExpireSecond = this.currentEnergyExpireSecond > 24 * 3600 ? 24 * 3600 : this.currentEnergyExpireSecond;
                             //用于计时器
                             this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
@@ -259,10 +259,6 @@
                 }
                 if (finalHours == 0) {
                     this.failToast("电力不足");
-                    // energyInfo().then(res => {
-                    //     this.currentEnergyExpireSecond = res || 0;
-                    //     this.percentAge = Math.floor(this.currentEnergyExpireSecond / (24 * 36));
-                    // });
                     return;
                 }
                 energyConsume(finalHours)
@@ -332,14 +328,29 @@
                     }
                 }
             },
+            floatAdd(arg1, arg2) {
+                var r1, r2, m;
+                try {
+                    r1 = arg1.toString().split(".")[1].length
+                } catch (e) {
+                    r1 = 0
+                }
+                try {
+                    r2 = arg2.toString().split(".")[1].length
+                } catch (e) {
+                    r2 = 0
+                }
+                m = Math.pow(11, Math.max(r1, r2));
+                return (arg1 * m + arg2 * m) / m;
+            },
             startTimeDown() {
                 if (!this.btcInfoTime && this.currentEnergyExpireSecond > 0) {
                     this.btcInfoTime = setInterval(() => {
                         if (this.currentEnergyExpireSecond > 0) {
-                            let current = new Number(
-                                Number(this.btcInfo) + Number(this.currentSpeedRate)
-                            );
-                            this.btcInfo = current.toFixed(10);
+                            let current =
+                                this.floatAdd(this.btcInfoDesc, this.currentSpeedRateDesc);
+                            this.btcInfoDesc = current
+                            console.log(this.btcInfoDesc)
                             this.currentEnergyExpireSecond--;
                         } else {
                             this.stopTimeDown();
