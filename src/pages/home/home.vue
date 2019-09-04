@@ -350,7 +350,6 @@
                             let current =
                                 this.floatAdd(this.btcInfoDesc, this.currentSpeedRateDesc);
                             this.btcInfoDesc = current
-                            console.log(this.btcInfoDesc)
                             this.currentEnergyExpireSecond--;
                         } else {
                             this.stopTimeDown();
